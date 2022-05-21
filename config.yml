@@ -1,3 +1,4 @@
 cli:
+  task: plugin
   inspect:
     cron: 0/20 * * * *

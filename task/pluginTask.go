@@ -17,11 +17,12 @@ type PluginTask struct{
 	PluginList []plugin.Plugin
 }
 
-func (t *PluginTask) Start(params TaskParams){ 
-   /**
+func (t *PluginTask) Init(){
+	/**
     * 从配置脚本加载，包括插件配置、定时的配置等
     * 需要根据 params的内容，来决定执行那些PLUGIN
     */
+   t.PluginList =  []plugin.Plugin{&plugin.InspectPlugin{}}
    ctx := ctx.CreateContext()
    pluginParams := plugin.ExecuteParams{}
    cron := cfg.GetConfig("cli.inspect.cron")
@@ -36,6 +37,10 @@ func (t *PluginTask) Start(params TaskParams){
 			log.Println(err)
 		}
 	}
+}
+
+func (t *PluginTask) Start(params TaskParams){ 
+   
 	cronInstance.Start()
 }
 
@@ -47,8 +52,4 @@ func  (t *PluginTask) Name()string{
     return reflect.TypeOf(t).Elem().Name()
 }
 
-func initPluginTask()Task{
-	inspectPlugin := plugin.InspectPlugin{}
-	task := PluginTask{PluginList:[]plugin.Plugin{&inspectPlugin}}
-	return &task
-}
+

@@ -28,6 +28,7 @@ func main() {
 	pwd, _ := os.Getwd()
 	cfg.Load(pwd+"/config.yml")
 	var rootTask task.Task = &task.Console{}
+	rootTask.Init()
 	rootTask.Start(task.TaskParams{})	
 	for {
 		s := <-sysCh

@@ -20,6 +20,8 @@ type TaskParams struct{
  */
 type Task interface{
 
+	Init()
+
 	/**
 	 * 开始任务
 	 */
