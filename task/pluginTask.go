@@ -3,6 +3,7 @@ package task
 import (
 		"cloudCli/plugin/ctx"
 		"cloudCli/plugin"
+		"cloudCli/cfg"
 		"github.com/robfig/cron/v3"
 		"reflect"
 		"log"
@@ -23,13 +24,17 @@ func (t *PluginTask) Start(params TaskParams){
     */
    ctx := ctx.CreateContext()
    pluginParams := plugin.ExecuteParams{}
-	_,err := cronInstance.AddFunc("0/10 * * * *", func(){
-		for _,instance := range t.PluginList{
-			instance.Execute(ctx,pluginParams)
-	    }
-	 })  
-	if (err!=nil){
-		log.Println(err)
+   cron := cfg.GetConfig("cli.inspect.cron")
+   if (cron!=nil){
+   	log.Println("Cron ",cron)
+		_,err := cronInstance.AddFunc("0/10 * * * *", func(){
+			for _,instance := range t.PluginList{
+				instance.Execute(ctx,pluginParams)
+		    }
+		 })  
+		if (err!=nil){
+			log.Println(err)
+		}
 	}
 	cronInstance.Start()
 }

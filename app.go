@@ -2,6 +2,7 @@ package main
 
 import (
 	"cloudCli/task"
+	"cloudCli/cfg"
 	"fmt"
 	"log"
 	"os"
@@ -23,6 +24,9 @@ func main() {
 		  `)
 	sysCh := make(chan os.Signal, 1)
 	signal.Notify(sysCh, syscall.SIGKILL, syscall.SIGINT)
+
+	pwd, _ := os.Getwd()
+	cfg.Load(pwd+"/config.yml")
 	var rootTask task.Task = &task.Console{}
 	rootTask.Start(task.TaskParams{})	
 	for {

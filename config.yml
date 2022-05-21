@@ -1,0 +1,3 @@
+cli:
+  inspect:
+    cron: 0/20 * * * *

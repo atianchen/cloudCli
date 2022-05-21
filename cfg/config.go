@@ -4,7 +4,10 @@ import (
 	"cloudCli/common"
 	"strings"
 	"log"
+	"os"
+	"gopkg.in/yaml.v3"
 	)
+
 
 
 /**
@@ -17,30 +20,39 @@ type Config struct{
 	Data map[string]interface{}
 }
 
+var CliConfig Config = Config{}
+
 /**
  * 获取配置
- * 配置的KEY可以用.分割，比如inspect.timer
+ * 配置的KEY可以用.分割，比如inspect.cron
  */
-func (c *Config) Get(key string)interface{}
-{
-	var keyAry := springs.Split(key,common.KEY_DELIMITER)
-	var val interface{}
+func  GetConfig(key string)interface{}{
+	keyAry := strings.Split(key,common.KEY_DELIMITER)
+	var val interface{} = CliConfig.Data
 	for _,itemKey :=range keyAry{
-	  val = getMapValue(c.Data,itemKey)
-	  if val!=nil){
-	  	switch (val.(type))
-	  	{
-	  		case map[string]interface{}:
-	  			val = 
-	  	}
-	  } else {
-	  	break
-	  }
+	    val = getMapValue(val.(map[string]interface{}),itemKey)
+	    if (val==nil){
+	    	break
+	    }
+	    
 	}
 	return val
 }
 
-func getMapValue(data *map[string]interface{},key string)interface{}{
+func getMapValue(data map[string]interface{},key string)interface{}{
 	rs,_:= data[key]
 	return rs
+}
+
+
+func Load(path string){
+	log.Println("Read Config",path)
+	f, err := os.Open(path)
+	if err != nil {
+		return
+	}
+	defer f.Close()
+	decode:=yaml.NewDecoder(f)
+	decode.Decode(&(CliConfig.Data))
+	log.Println(CliConfig.Data)
 }
