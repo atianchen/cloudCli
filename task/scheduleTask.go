@@ -12,12 +12,12 @@ import (
  * 负责管理所有plugin
  */
 var cronInstance = cron.New()
-type PluginTask struct{
+type ScheduleTask struct{
 	AbstractTask
 	PluginList []plugin.Plugin
 }
 
-func (t *PluginTask) Init(){
+func (t *ScheduleTask) Init(){
 	/**
     * 从配置脚本加载，包括插件配置、定时的配置等
     * 需要根据 params的内容，来决定执行那些PLUGIN
@@ -39,16 +39,16 @@ func (t *PluginTask) Init(){
 	}
 }
 
-func (t *PluginTask) Start(params TaskParams){ 
+func (t *ScheduleTask) Start(params TaskParams){ 
    
 	cronInstance.Start()
 }
 
-func (t *PluginTask) Stop(){
+func (t *ScheduleTask) Stop(){
    cronInstance.Stop()
 }
 
-func  (t *PluginTask) Name()string{
+func  (t *ScheduleTask) Name()string{
     return reflect.TypeOf(t).Elem().Name()
 }
 
