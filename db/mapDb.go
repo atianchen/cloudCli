@@ -6,12 +6,12 @@ import "time"
  * @author jensen.chen
  * @date 2022-05-23
  */
-type MapDbHelper interface{
+type NoSqlDb interface{
 
 	/**
 	 * 初始化
 	 */
-	Connect(path string)
+	Connect(cfg DbConfig)
 	/**
 	 * 设置值
 	 * @expireTime 过期时间

@@ -5,7 +5,7 @@ package db
  * @author jensen.chen
  * @date 2022-05-23
  */
-type DbHelper interface{
+type Repository interface{
 
 	/**
 	 * 保存

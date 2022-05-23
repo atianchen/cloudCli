@@ -8,10 +8,10 @@ import (
 
 
 func TestAdd(t *testing.T){
-	dbHelper := db.BadgerDbHelper{}
+	db := db.BadgerDb{}
 	defer dbHelper.Release()
-	dbHelper.Connect("d:/temp/db")
-	err := dbHelper.Set("name","chenzhi",0)
+	db.Connect("d:/temp/db")
+	err := db.Set("name","chenzhi",0)
 	if (err!=nil){
 		t.Errorf("Save Error: %s\n", err.Error())
 	}else{
@@ -20,10 +20,10 @@ func TestAdd(t *testing.T){
 }
 
 func TestGet(t *testing.T){
-	dbHelper := db.BadgerDbHelper{}
-	defer dbHelper.Release()
-	dbHelper.Connect("d:/temp/db")
-	content,err := dbHelper.Get("name")
+	db := db.BadgerDb{}
+	defer db.Release()
+	db.Connect("d:/temp/db")
+	content,err := db.Get("name")
 	if (err!=nil){
 		t.Errorf("Save Error: %s\n", err.Error())
 	}else{
