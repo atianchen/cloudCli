@@ -5,9 +5,27 @@ import (
 	"cloudCli/cfg"
 	"reflect"
 	"os"
+	"log"
 )
 
-
+/*	Id int64
+	Name string
+	Path string
+	ModifyDate int64//文件最后的修改日期
+	LastCheckDate int64 //文件最后的检测日期
+	Hash string //文件的HASH值得*/
+const tableCreateSql string = `
+		CREATE TABLE IF NOT EXISTS  "inspect_doc" (
+			    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+			    "name" VARCHAR(255) NULL,
+			    "path" VARCHAR(1000) NULL,
+			    "modifyDate" INTEGER NULL,
+			    "lastCheckDate" INTEGER NULL,
+			    "hash" VARCHAR(1000) NULL,
+			    "ts" INTEGER NULL,
+			    "creator"  VARCHAR(255) NULL
+			);
+		`
 /**
  * 数据库实例管理
  * 负责建立、销毁数据库实例
@@ -17,8 +35,10 @@ type DbManager struct{
 }
 
 func (d *DbManager) Init(){
-	db.MapDb = d.initNoSqlDb()
-	db.Db = d.initSqlDb()
+	db.MapDbInst = d.initNoSqlDb()
+	db.DbInst = d.initSqlDb()
+	_,err := db.DbInst.Execute(tableCreateSql)
+	log.Println(err)
 }	
 
 /**
@@ -48,6 +68,7 @@ func (d *DbManager) initSqlDb()db.SqlDb{
 	if (cfgVal!=nil){
 		dbConfig.DbFile = cfgVal.(string)
 	}
+	log.Println(dbConfig.DbFile)
 	db := &db.SqlLiteDb{}
 	db.Connect(dbConfig) 
 	return db
@@ -59,8 +80,11 @@ func (d *DbManager) Start(params TaskParams){
 
 
 func (d *DbManager) Stop(){
-	if (db.MapDb!=nil){
-		db.MapDb.Release()
+	if (db.MapDbInst!=nil){
+		db.MapDbInst.Release()
+	}
+	if (db.DbInst!=nil){
+		db.DbInst.Release()
 	}
 }
 
