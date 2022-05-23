@@ -1,4 +1,7 @@
 cli:
+  db:
+    badger: 
+      path: d:/work/db2
   task: plugin
   inspect:
     cron: 0/20 * * * *

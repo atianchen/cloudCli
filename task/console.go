@@ -12,7 +12,8 @@ import (
  */
 var preSetTasks = map[string]reflect.Type{"plugin":reflect.TypeOf(ScheduleTask{})}//预置任务
 
-var sysTasks []Task
+var sysTasks = []Task{&DbManager{}}
+
 
 type Console struct{
     AbstractTask
@@ -22,17 +23,21 @@ func (c* Console) Init(){
   /**
      * 需要根据配置决定需要执行那些系统任务
      */
-    sysTasks = []Task{}
     taskConfig := cfg.GetConfig("cli.task")
     if (taskConfig!=nil){
         taskAry := strings.Split(taskConfig.(string),",")
         for _,taskName :=range taskAry{
             task := reflect.New(preSetTasks[taskName]).Interface().(Task)
-            task.Init()
+         
             sysTasks = append(sysTasks,task)
         }
     }
-   
+    /**
+     * 任务初始化
+     */
+   for _,task :=range sysTasks{
+        task.Init()
+    }
 }
 
 func (c* Console) Start(params TaskParams){
