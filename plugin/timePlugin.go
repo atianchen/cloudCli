@@ -1,14 +1,15 @@
 package plugin
 
 import (
-		"net/http"
-		 "cloudCli/plugin/ctx"
-		 "log"
-	)
+	"cloudCli/ctx"
+	"log"
+	"net/http"
+)
+
 /**
  * 对比系统时间与世界时钟是否差异较大
  */
-type TimeInspectPlugin struct{
+type TimeInspectPlugin struct {
 
 	/**
 	 * 时间校准服务器地址
@@ -16,7 +17,7 @@ type TimeInspectPlugin struct{
 	server string
 }
 
-func (t *TimeInspectPlugin) execute(context ctx.Context,params ExecuteParams){
+func (t *TimeInspectPlugin) execute(context ctx.Context, params ExecuteParams) {
 	/**
 	 * 从远程服务器获取时间
 	 */

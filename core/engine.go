@@ -1,13 +1,13 @@
 package core
 
 import (
-        "cloudCli/plugin/ctx"
-        "cloudCli/task"
-        )
+	"cloudCli/ctx"
+	"cloudCli/task"
+)
+
 /**
  * 执行引擎
  */
-type Engine  interface
-{
-	execute (ctx ctx.Context,task task.Task)
+type Engine interface {
+	execute(ctx ctx.Context, task task.Task)
 }
