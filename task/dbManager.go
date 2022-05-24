@@ -19,8 +19,8 @@ const tableCreateSql string = `
 			    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
 			    "name" VARCHAR(255) NULL,
 			    "path" VARCHAR(1000) NULL,
-			    "modifyDate" INTEGER NULL,
-			    "lastCheckDate" INTEGER NULL,
+			    "modify_date" INTEGER NULL,
+			    "last_checkdate" INTEGER NULL,
 			    "hash" VARCHAR(1000) NULL,
 			    "ts" INTEGER NULL,
 			    "creator"  VARCHAR(255) NULL

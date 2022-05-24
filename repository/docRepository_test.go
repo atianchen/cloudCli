@@ -17,7 +17,7 @@ func TestInsert(t *testing.T){
 	doc := domain.DocInfo{}
 	doc.Name = "test.xlss"
 	repository:=dao.DocRepository{}
-	fmt.Println(repository.Save(doc))
+	fmt.Println(repository.Save(&doc))
 	fmt.Println("--------------")
 	doc1,err:=repository.GetByPrimary(1)
 	fmt.Println(err)

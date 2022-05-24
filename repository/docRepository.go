@@ -17,8 +17,8 @@ type DocRepository struct{
 
 
 
-func (r *DocRepository) Save(doc domain.DocInfo) error{
-	_,err :=  db.DbInst.Execute("insert into inspect_doc (name,path,modifyDate,lastCheckDate,hash,ts) values (?,?,?,?,?,?)",
+func (r *DocRepository) Save(doc *domain.DocInfo) error{
+	_,err :=  db.DbInst.Execute("insert into inspect_doc (name,path,modify_date,last_checkdate,hash,ts) values (?,?,?,?,?,?)",
 		doc.Name,doc.Path,doc.ModifyDate,doc.LastCheckDate,doc.Hash,doc.Ts)
 	log.Println(err)
 	return err
@@ -28,8 +28,8 @@ func (r *DocRepository) Save(doc domain.DocInfo) error{
 /**
  * 更新
  */
-func (r *DocRepository) Update(doc domain.DocInfo) error{
-	_,err :=  db.DbInst.Execute("update inspect_doc set name=?,path=?,modifyDate=?,lastCheckDate=?,hash=?,ts=? where id=?",
+func (r *DocRepository) Update(doc *domain.DocInfo) error{
+	_,err :=  db.DbInst.Execute("update inspect_doc set name=?,path=?,modify_date=?,last_checkdate=?,hash=?,ts=? where id=?",
 		doc.Name,doc.Path,doc.ModifyDate,doc.LastCheckDate,doc.Hash,doc.Ts,doc.Id)
 	return err
 }
@@ -37,7 +37,7 @@ func (r *DocRepository) Update(doc domain.DocInfo) error{
 /**
  * 删除
  */
-func (r *DocRepository) Remove(doc domain.DocInfo) error{
+func (r *DocRepository) Remove(doc *domain.DocInfo) error{
 	return r.RemoveByPrimary(doc.Id)
 }
 
