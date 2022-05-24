@@ -14,6 +14,7 @@ require (
 	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/google/flatbuffers v1.12.1 // indirect
+	github.com/jmoiron/sqlx v1.3.5 // indirect
 	github.com/klauspost/compress v1.12.3 // indirect
 	github.com/mattn/go-sqlite3 v1.14.13 // indirect
 	github.com/pkg/errors v0.9.1 // indirect

@@ -2,6 +2,8 @@ cli:
   db:
     badger: 
       path: d:/work/db2
+    sqllite3:
+      path: d:/work/temp/sql.db
   task: plugin
   inspect:
     cron: 0/20 * * * *

@@ -19,7 +19,7 @@ func main() {
 \____/_/\____/\__,_/\__,_/   \____/_/_/  
 
        YonyouHK  @2022 V0.01 
-  https://github.com/atianchen/cloudCli
+  	  compile by Go V1.8
                                          
 		  `)
 	sysCh := make(chan os.Signal, 1)

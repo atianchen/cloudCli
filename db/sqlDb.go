@@ -15,14 +15,19 @@ type SqlDb interface{
 	 * 执行SQL
 	 * @args 参数
 	 */
-	Execute(sql  string,args ...any) (sql.Result,error)
+	Execute(sql string,args ...any) (sql.Result,error)
+
+	/**
+	 * 返回单条数据
+	 */
+	Get(dest interface{},sql string ,args...any) error
 
 
 	/**
 	 * 查询
-	 * @args 参数
+	 * @dest 数组指针
 	 */
-	Query(sql string,args ...any) (*sql.Rows,error)
+	Query(dest interface{},sql string,args ...any) error
 
 	/**
 	 * 释放数据库链接
