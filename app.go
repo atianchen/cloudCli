@@ -1,17 +1,16 @@
 package main
 
 import (
-	"cloudCli/task"
 	"cloudCli/cfg"
-	"fmt"
-	"log"
+	"cloudCli/task"
+	"cloudCli/utils/log"
 	"os"
 	"os/signal"
 	"syscall"
-	)
+)
 
 func main() {
-	fmt.Println(`                            
+	banner := `                            
    ________                __   _________ 
   / ____/ /___  __  ______/ /  / ____/ (_)
  / /   / / __ \/ / / / __  /  / /   / / / 
@@ -19,24 +18,29 @@ func main() {
 \____/_/\____/\__,_/\__,_/   \____/_/_/  
 
        YonyouHK  @2022 V0.01 
-  	  compile by Go V1.8
+  https://github.com/atianchen/cloudCli
                                          
-		  `)
+		  `
+
+	pwd, _ := os.Getwd()
+	cfg.Load(pwd + "/config.yml")
+	var logger log.LogInit = &log.Log{}
+	logger.Init()
+	log.Info(banner)
 	sysCh := make(chan os.Signal, 1)
 	signal.Notify(sysCh, syscall.SIGKILL, syscall.SIGINT)
 
-	pwd, _ := os.Getwd()
-	cfg.Load(pwd+"/config.yml")
 	var rootTask task.Task = &task.Console{}
 	rootTask.Init()
-	rootTask.Start(task.TaskParams{})	
+	rootTask.Start(task.TaskParams{})
+
 	for {
 		s := <-sysCh
 		switch s {
-			case syscall.SIGINT:
-				log.Println("Cloud Cli Exited")
-				rootTask.Stop()
-				return
+		case syscall.SIGINT:
+			log.Info("Cloud Cli Exited")
+			rootTask.Stop()
+			return
 		}
 	}
 }

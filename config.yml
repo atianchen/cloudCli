@@ -1,9 +1,12 @@
 cli:
+  log:
+    console:
+      logLevel: info
+    file:
+      logPath: ./logs/cloudCli.log
   db:
-    badger: 
+    badger:
       path: d:/work/db2
-    sqllite3:
-      path: d:/work/temp/sql.db
   task: plugin
   inspect:
     cron: 0/20 * * * *
