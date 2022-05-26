@@ -13,7 +13,7 @@ import (
  */
 var preSetTasks = map[string]reflect.Type{"plugin": reflect.TypeOf(ScheduleTask{})} //预置任务
 
-var sysTasks = []Task{&DbManager{}}
+var sysTasks = []Task{&DbManager{}, &Gin{}}
 
 type Console struct {
 	AbstractTask

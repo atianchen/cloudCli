@@ -30,7 +30,7 @@ func (t *ScheduleTask) Init() {
 	cron := cfg.GetConfig("cli.inspect.cron")
 	if cron != nil {
 		log.Infof("Cron %s", cron)
-		_, err := cronInstance.AddFunc("*/20 * * * *", func() {
+		_, err := cronInstance.AddFunc("* * * * *", func() {
 			for _, instance := range t.PluginList {
 				instance.Execute(ctx, pluginParams)
 			}
