@@ -4,6 +4,8 @@ import (
 	"cloudCli/utils/log"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"os"
 	"time"
 )
 
@@ -25,10 +27,11 @@ func Init() *gin.Engine {
 		gin.SetMode(gin.ReleaseMode) // gin设置成发布模式
 	}
 	r := gin.Default()
-	//r.LoadHTMLGlob("views/*.html")
+	getwd, _ := os.Getwd()
+	r.LoadHTMLGlob(getwd + "/gin/views/*.html")
 	r.Use(Cors(), log.GinLogger(), log.GinRecovery(true))
-	//r.StaticFS("/static", http.Dir("./views/static"))
-	group := r.Group("/api")
+	r.StaticFS("/static", http.Dir(getwd+"/gin/views/static"))
+	group := r.Group("/cloud")
 
 	for _, opt := range options {
 		opt(group)
