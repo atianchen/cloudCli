@@ -2,7 +2,7 @@ package plugin
 
 import (
 	"cloudCli/ctx"
-	"log"
+	"cloudCli/utils/log"
 	"net/http"
 )
 
@@ -17,7 +17,7 @@ type TimeInspectPlugin struct {
 	server string
 }
 
-func (t *TimeInspectPlugin) execute(context ctx.Context, params ExecuteParams) {
+func (t *TimeInspectPlugin) Execute(context ctx.Context, params ExecuteParams) {
 	/**
 	 * 从远程服务器获取时间
 	 */
@@ -28,5 +28,5 @@ func (t *TimeInspectPlugin) execute(context ctx.Context, params ExecuteParams) {
 	request.Header.Set("Accept-Encoding", "gzip,deflate,sdch")
 
 	response, _ := client.Do(request)
-	log.Println(response)
+	log.Info(response)
 }

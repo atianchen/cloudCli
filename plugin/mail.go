@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"cloudCli/ctx"
+	"cloudCli/utils/log"
 )
 
 type MailBoxConfig struct {
@@ -18,6 +19,6 @@ type MailPlugin struct {
 	config MailBoxConfig
 }
 
-func (t *MailPlugin) execute(context ctx.Context, params ExecuteParams) {
-
+func (t *MailPlugin) Execute(context ctx.Context, params ExecuteParams) {
+	log.Info("Execute MailPlugin")
 }

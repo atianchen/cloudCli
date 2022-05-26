@@ -2,7 +2,7 @@ package plugin
 
 import (
 	"cloudCli/ctx"
-	"log"
+	"cloudCli/utils/log"
 )
 
 /**
@@ -12,5 +12,5 @@ type InspectPlugin struct {
 }
 
 func (t *InspectPlugin) Execute(context ctx.Context, params ExecuteParams) {
-	log.Println("Execute InspectPlugin")
+	log.Info("Execute InspectPlugin")
 }
