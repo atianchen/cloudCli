@@ -12,6 +12,7 @@ import (
  */
 type Context interface {
 	common.Extends
+	Init()
 }
 
 /**
@@ -20,6 +21,20 @@ type Context interface {
 type DefaultContext struct {
 	common.BaseObj
 	common.ModalMap
+	/*
+		消息通道
+	*/
+	Channel chan interface{}
+}
+
+/**
+初始化环境变量
+*/
+func (ctx *DefaultContext) Init() {
+	/**
+	通道
+	*/
+	ctx.Channel = make(chan interface{})
 }
 
 /**
@@ -27,6 +42,7 @@ type DefaultContext struct {
  */
 func CreateContext() Context {
 	ctx := &DefaultContext{}
+	ctx.Init()
 	ctx.AttrMap = make(map[string]interface{})
 	return ctx //(Context)(unsafe.Pointer(ctx))
 }

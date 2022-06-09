@@ -16,6 +16,7 @@ type MailBoxConfig struct {
  * 发送邮件插件
  */
 type MailPlugin struct {
+	BasePlugin
 	config MailBoxConfig
 }
 

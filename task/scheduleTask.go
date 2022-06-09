@@ -25,14 +25,15 @@ func (t *ScheduleTask) Init() {
 	 * 需要根据 params的内容，来决定执行那些PLUGIN
 	 */
 	t.PluginList = []plugin.Plugin{&plugin.InspectPlugin{}, &plugin.MailPlugin{}}
-	ctx := ctx.CreateContext()
+
 	pluginParams := plugin.ExecuteParams{}
 	cron := cfg.GetConfig("cli.inspect.cron")
 	if cron != nil {
 		log.Infof("Cron %s", cron)
 		_, err := cronInstance.AddFunc("* * * * *", func() {
 			for _, instance := range t.PluginList {
-				instance.Execute(ctx, pluginParams)
+
+				instance.Execute(ctx.CreateContext(), pluginParams)
 			}
 		})
 		if err != nil {

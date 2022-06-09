@@ -140,7 +140,8 @@ func cEncodeCaller(caller zapcore.EntryCaller, enc zapcore.PrimitiveArrayEncoder
 	enc.AppendString("[" + caller.TrimmedPath() + "]")
 }
 
-// GinLogger 接收gin框架默认的日志，需要在router中注册
+// GinLogger 接收gin框架默认的日志，
+
 func GinLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()

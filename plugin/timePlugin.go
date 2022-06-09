@@ -10,7 +10,7 @@ import (
  * 对比系统时间与世界时钟是否差异较大
  */
 type TimeInspectPlugin struct {
-
+	BasePlugin
 	/**
 	 * 时间校准服务器地址
 	 */
