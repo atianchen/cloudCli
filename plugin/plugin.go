@@ -29,7 +29,7 @@ L:
 					if msg.(*channel2.CommandMessage).Name == "close" {
 						break L
 					} else {
-						b.HandleMessage(msg.(*channel2.PluginMessage))
+						b.HandleMessage(msg.(*channel2.Message))
 					}
 				}
 			}
@@ -41,7 +41,7 @@ L:
 /**
 处理消息
 */
-func (b *BasePlugin) HandleMessage(msg *channel2.PluginMessage) *PluginResponse {
+func (b *BasePlugin) HandleMessage(msg *channel2.Message) *PluginResponse {
 	return nil
 }
 

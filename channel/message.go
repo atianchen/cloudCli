@@ -9,16 +9,17 @@ import "cloudCli/common"
  */
 const MESSAGE_CLOSE = "close"
 
-type PluginMessage interface {
-	GetPayload() interface{}
+type Message struct {
+	common.ModalMap
+	Payload interface{}
 }
 
 type CommandMessage struct {
-	common.ModalMap
+	Message
 	Name string //消息名
 }
 
-func (*CommandMessage) GetPayload() interface{} {
+func (*Message) GetPayload() interface{} {
 	return nil
 }
 
