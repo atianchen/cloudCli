@@ -14,12 +14,12 @@ import (
  */
 var cronInstance = cron.New()
 
-type ScheduleTask struct {
+type PluginTask struct {
 	AbstractTask
 	PluginList []plugin.Plugin
 }
 
-func (t *ScheduleTask) Init() {
+func (t *PluginTask) Init() {
 	/**
 	 * 从配置脚本加载，包括插件配置、定时的配置等
 	 * 需要根据 params的内容，来决定执行那些PLUGIN
@@ -33,7 +33,7 @@ func (t *ScheduleTask) Init() {
 		_, err := cronInstance.AddFunc("* * * * *", func() {
 			for _, instance := range t.PluginList {
 
-				instance.Execute(ctx.CreateContext(), pluginParams)
+				instance.Execute(ctx.CreateContext(instance), pluginParams)
 			}
 		})
 		if err != nil {
@@ -42,15 +42,15 @@ func (t *ScheduleTask) Init() {
 	}
 }
 
-func (t *ScheduleTask) Start(params TaskParams) {
+func (t *PluginTask) Start(params TaskParams) {
 
 	cronInstance.Start()
 }
 
-func (t *ScheduleTask) Stop() {
+func (t *PluginTask) Stop() {
 	cronInstance.Stop()
 }
 
-func (t *ScheduleTask) Name() string {
+func (t *PluginTask) Name() string {
 	return reflect.TypeOf(t).Elem().Name()
 }

@@ -13,7 +13,7 @@ type Gin struct {
 	AbstractTask
 }
 
-var cliCtx ctx.Context = ctx.CreateContext()
+var cliCtx ctx.Context = ctx.CreateContext(nil)
 
 func (*Gin) Init() {
 }

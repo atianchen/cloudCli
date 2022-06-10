@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	channel2 "cloudCli/channel"
 	"cloudCli/ctx"
 )
 
@@ -23,12 +24,12 @@ L:
 		select {
 		case msg := <-channel:
 			switch msg.(type) {
-			case CommandMessage:
+			case channel2.CommandMessage:
 				{
-					if msg.(*CommandMessage).Name == "close" {
+					if msg.(*channel2.CommandMessage).Name == "close" {
 						break L
 					} else {
-						b.HandleMessage(msg.(*PluginMessage))
+						b.HandleMessage(msg.(*channel2.PluginMessage))
 					}
 				}
 			}
@@ -40,7 +41,7 @@ L:
 /**
 处理消息
 */
-func (b *BasePlugin) HandleMessage(msg *PluginMessage) *PluginResponse {
+func (b *BasePlugin) HandleMessage(msg *channel2.PluginMessage) *PluginResponse {
 	return nil
 }
 

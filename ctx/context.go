@@ -2,7 +2,9 @@ package ctx
 
 //import "unsafe"
 import (
+	"cloudCli/channel"
 	"cloudCli/common"
+	"reflect"
 )
 
 /**
@@ -12,7 +14,7 @@ import (
  */
 type Context interface {
 	common.Extends
-	Init()
+	Init(target interface{})
 }
 
 /**
@@ -30,19 +32,21 @@ type DefaultContext struct {
 /**
 初始化环境变量
 */
-func (ctx *DefaultContext) Init() {
+func (ctx *DefaultContext) Init(target interface{}) {
 	/**
 	通道
 	*/
-	ctx.Channel = make(chan interface{})
+	if target != nil {
+		ctx.Channel = channel.CreateChan(reflect.TypeOf(target).Elem().Name())
+	}
 }
 
 /**
  * 创建默认Context
  */
-func CreateContext() Context {
+func CreateContext(target interface{}) Context {
 	ctx := &DefaultContext{}
-	ctx.Init()
+	ctx.Init(target)
 	ctx.AttrMap = make(map[string]interface{})
 	return ctx //(Context)(unsafe.Pointer(ctx))
 }

@@ -1,4 +1,4 @@
-package plugin
+package channel
 
 import "cloudCli/common"
 
@@ -20,4 +20,8 @@ type CommandMessage struct {
 
 func (*CommandMessage) GetPayload() interface{} {
 	return nil
+}
+
+func BuildCloseCommand() *CommandMessage {
+	return &CommandMessage{Name: MESSAGE_CLOSE}
 }
