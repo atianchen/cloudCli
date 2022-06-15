@@ -1,7 +1,8 @@
-package task
+package node
 
 import (
 	"cloudCli/cfg"
+	"cloudCli/ctx"
 	"cloudCli/db"
 	"cloudCli/utils/log"
 	"os"
@@ -32,7 +33,7 @@ const tableCreateSql string = `
  * 负责建立、销毁数据库实例
  */
 type DbManager struct {
-	AbstractTask
+	AbstractNode
 }
 
 func (d *DbManager) Init() {
@@ -75,7 +76,7 @@ func (d *DbManager) initSqlDb() db.SqlDb {
 	return db
 }
 
-func (d *DbManager) Start(params TaskParams) {
+func (d *DbManager) Start(context ctx.Context) {
 
 }
 

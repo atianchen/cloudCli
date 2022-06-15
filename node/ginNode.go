@@ -1,4 +1,4 @@
-package task
+package node
 
 import (
 	"cloudCli/ctx"
@@ -10,7 +10,7 @@ import (
 )
 
 type Gin struct {
-	AbstractTask
+	AbstractNode
 }
 
 var cliCtx ctx.Context = ctx.CreateContext(nil)
@@ -18,7 +18,7 @@ var cliCtx ctx.Context = ctx.CreateContext(nil)
 func (*Gin) Init() {
 }
 
-func (*Gin) Start(params TaskParams) {
+func (*Gin) Start(context ctx.Context) {
 	routers.Include(test.Routers)
 	r := routers.Init()
 	srv := &http.Server{

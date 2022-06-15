@@ -1,8 +1,9 @@
-package task
+package node
 
 import (
 	"cloudCli/cfg"
 	"cloudCli/channel"
+	"cloudCli/ctx"
 	"cloudCli/utils/log"
 	"reflect"
 	"strings"
@@ -14,21 +15,21 @@ import (
  */
 var preSetTasks = map[string]reflect.Type{"plugin": reflect.TypeOf(PluginTask{})} //预置任务
 
-var sysTasks = []Task{&DbManager{}, &Gin{}}
+var sysTasks = []Node{&DbManager{}, &Gin{}}
 
 type Console struct {
-	AbstractTask
+	AbstractNode
 }
 
 func (c *Console) Init() {
 	/**
 	 * 需要根据配置决定需要执行那些系统任务
 	 */
-	taskConfig := cfg.GetConfig("cli.task")
+	taskConfig := cfg.GetConfig("cli.node")
 	if taskConfig != nil {
 		taskAry := strings.Split(taskConfig.(string), ",")
 		for _, taskName := range taskAry {
-			task := reflect.New(preSetTasks[taskName]).Interface().(Task)
+			task := reflect.New(preSetTasks[taskName]).Interface().(Node)
 
 			sysTasks = append(sysTasks, task)
 		}
@@ -41,11 +42,11 @@ func (c *Console) Init() {
 	}
 }
 
-func (c *Console) Start(params TaskParams) {
+func (c *Console) Start(context ctx.Context) {
 
 	for _, task := range sysTasks {
 		log.Infof("Start Task %s", task.Name())
-		task.Start(params)
+		task.Start(ctx.CreateContext(task))
 	}
 }
 

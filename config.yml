@@ -7,6 +7,6 @@ cli:
   db:
     badger:
       path: d:/work/db2
-  task: plugin
-  inspect:
+  task: gG
+  scheduler:
     cron: 0/20 * * * *

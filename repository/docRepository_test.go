@@ -3,14 +3,14 @@ package repository
 import (
 	"cloudCli/cfg"
 	"cloudCli/domain"
-	"cloudCli/task"
+	"cloudCli/node"
 	"fmt"
 	"testing"
 )
 
 func TestInsert(t *testing.T) {
 	cfg.Load("../config.yml")
-	dbManager := task.DbManager{}
+	dbManager := node.DbManager{}
 	dbManager.Init()
 	defer dbManager.Stop()
 	doc := domain.DocInfo{}

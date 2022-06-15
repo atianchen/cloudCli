@@ -8,6 +8,7 @@ import "cloudCli/common"
  * @date 2022/6/9
  */
 const MESSAGE_CLOSE = "close"
+const MESSAGE_ONTIME = "onTime"
 
 type Message struct {
 	common.ModalMap
