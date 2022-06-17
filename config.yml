@@ -7,6 +7,7 @@ cli:
   db:
     badger:
       path: d:/work/db2
-  task: gG
-  scheduler:
-    cron: 0/20 * * * *
+  node: CronNode
+  timer:
+    ConfigGuard: 0/20 * * * *
+    InpectNode: 0/40 * * * *

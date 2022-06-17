@@ -47,6 +47,7 @@ func (t *AbstractNode) Name() string {
 func (b *AbstractNode) dispatch(channel chan interface{}) {
 L:
 	for {
+
 		select {
 		case msg := <-channel:
 			switch msg.(type) {
@@ -67,6 +68,7 @@ L:
 /**
 处理消息
 */
-func (b *AbstractNode) HandleMessage(msg *channel2.Message) *AsyncResponse {
+func (b *AbstractNode) HandleMessage(msg interface{}) *AsyncResponse {
+
 	return nil
 }

@@ -1,7 +1,9 @@
 package node
 
 import (
-	_ "github.com/robfig/cron/v3"
+	"cloudCli/cfg"
+	"cloudCli/channel"
+	"github.com/robfig/cron/v3"
 	"reflect"
 )
 
@@ -10,6 +12,7 @@ import (
 */
 type CronNode struct {
 	AbstractNode
+	cronInstance *cron.Cron
 }
 
 func (t *CronNode) Init() {
@@ -36,11 +39,25 @@ func (t *CronNode) Init() {
 }
 
 func (t *CronNode) Start() {
-
+	t.cronInstance = cron.New()
+	cronExpress := cfg.GetConfig("cli.timer")
+	if cronExpress != nil {
+		for node, express := range cronExpress.(map[string]interface{}) {
+			t.cronInstance.AddFunc(express.(string), func() {
+				/**
+				定时任务通知
+				*/
+				nc := channel.GetChan(node)
+				if nc != nil {
+					nc <- channel.BulidOnTimeMessage(nil)
+				}
+			})
+		}
+	}
 }
 
 func (t *CronNode) Stop() {
-
+	t.cronInstance.Stop()
 }
 
 func (t *CronNode) Name() string {

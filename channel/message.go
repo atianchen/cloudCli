@@ -1,7 +1,5 @@
 package channel
 
-import "cloudCli/common"
-
 /**
  *
  * @author jensen.chen
@@ -10,20 +8,30 @@ import "cloudCli/common"
 const MESSAGE_CLOSE = "close"
 const MESSAGE_ONTIME = "onTime"
 
-type Message struct {
-	common.ModalMap
-	Payload interface{}
+type Message interface {
 }
 
 type CommandMessage struct {
-	Message
-	Name string //消息名
+	Payload interface{}
+	Name    string //消息名
 }
 
-func (*Message) GetPayload() interface{} {
+func (*CommandMessage) GetPayload() interface{} {
 	return nil
 }
 
+/**
+构建系统关闭Command
+*/
 func BuildCloseCommand() *CommandMessage {
 	return &CommandMessage{Name: MESSAGE_CLOSE}
+}
+
+/**
+构建定时任务
+*/
+func BulidOnTimeMessage(payload interface{}) *CommandMessage {
+	cmd := &CommandMessage{Name: MESSAGE_CLOSE}
+	cmd.Payload = payload
+	return cmd
 }

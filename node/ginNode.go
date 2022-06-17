@@ -1,6 +1,7 @@
 package node
 
 import (
+	channel2 "cloudCli/channel"
 	"cloudCli/ctx"
 	"cloudCli/gin/controller/test"
 	"cloudCli/gin/routers"
@@ -32,6 +33,24 @@ func (*Gin) Start(context ctx.Context) {
 			log.Errorf("listen: %s", err)
 		}
 	}()
+}
+
+/**
+处理消息
+*/
+func (b *Gin) HandleMessage(msg interface{}) *AsyncResponse {
+	switch msg.(type) {
+	case channel2.CommandMessage:
+		{
+			switch msg.(*channel2.CommandMessage).Name {
+			case channel2.MESSAGE_ONTIME:
+				{
+					//执行定时业务逻辑
+				}
+			}
+		}
+	}
+	return nil
 }
 
 func (*Gin) Stop() {

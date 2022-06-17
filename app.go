@@ -21,7 +21,6 @@ func main() {
   https://github.com/atianchen/cloudCli
                                          
 		  `
-
 	pwd, _ := os.Getwd()
 	cfg.Load(pwd + "/config.yml")
 	var logger log.LogInit = &log.Log{}
