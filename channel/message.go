@@ -11,6 +11,13 @@ const MESSAGE_ONTIME = "onTime"
 type Message interface {
 }
 
+/**
+Web请求的Message
+*/
+type RequestMessage struct {
+	Payload interface{}
+}
+
 type CommandMessage struct {
 	Payload interface{}
 	Name    string //消息名
