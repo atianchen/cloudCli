@@ -11,3 +11,10 @@ cli:
   timer:
     ConfigGuard: 0/20 * * * *
     InpectNode: 0/40 * * * *
+  nacos:
+    addr: http://127.0.0.1:8086/nacos
+    namespace: test
+    logDir: /log/nacos
+    cacheDir: /nacos/cache
+  inpect:
+    profile:

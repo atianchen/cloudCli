@@ -19,6 +19,10 @@ type Config struct {
 
 var CliConfig Config = Config{}
 
+func existNode(key string) bool {
+
+}
+
 /**
  * 获取配置
  * 配置的KEY可以用.分割，比如inspect.cron
