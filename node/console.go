@@ -13,7 +13,7 @@ import (
  * 系统控制台，用于系统的一些初始化和固有TASK执行
  * 控制台是系统的根TASK
  */
-var preSetTasks = map[string]reflect.Type{"plugin": reflect.TypeOf(PluginTask{})} //预置任务
+var preSetTasks = map[string]reflect.Type{"plugin": reflect.TypeOf(CronNode{})} //预置任务
 
 var sysTasks = []Node{&DbManager{}, &Gin{}}
 

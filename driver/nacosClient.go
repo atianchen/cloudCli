@@ -13,12 +13,12 @@ import (
  * @date 2022/6/27
  */
 type NacosConfig struct {
-	Server    utils.Protocol //服务器信息
-	User      string         //用户名
-	Password  string         //密码
-	LogDir    string         //日志目录
-	CacheDir  string         //缓存目录
-	NameSpace string         //命名空间
+	Server    *utils.Protocol //服务器信息
+	User      string          //用户名
+	Password  string          //密码
+	LogDir    string          `config:"logDir"`    //日志目录
+	CacheDir  string          `config:"cacheDir"`  //缓存目录
+	NameSpace string          `config:"nameSpace"` //命名空间
 }
 type NacosClient struct {
 	config       *NacosConfig
@@ -29,14 +29,13 @@ type NacosClient struct {
 根据配置文件创建NacosClient
 */
 func createNacosClientFromConfig() (*NacosClient, error) {
-	config.getConfg
+	return nil, nil
 }
 
 func CreateNacosClient(config *NacosConfig) (*NacosClient, error) {
 	client := &NacosClient{config: config}
 	serverConfigs := []constant.ServerConfig{
 		*constant.NewServerConfig(
-
 
 			config.Server.Ip,
 			config.Server.Port,

@@ -9,12 +9,15 @@ cli:
       path: d:/work/db2
   node: CronNode
   timer:
-    ConfigGuard: 0/20 * * * *
-    InpectNode: 0/40 * * * *
+    configGuard: 0/20 * * * *
+    inpectNode: 0/40 * * * *
   nacos:
+    server:
+      ip: 127.0.0.1
+      scheme: http
     addr: http://127.0.0.1:8086/nacos
-    namespace: test
+    nameSpace: test
     logDir: /log/nacos
     cacheDir: /nacos/cache
   inpect:
-    profile:
+    profile: profile.json
