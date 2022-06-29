@@ -12,10 +12,7 @@ cli:
     configGuard: 0/20 * * * *
     inpectNode: 0/40 * * * *
   nacos:
-    server:
-      ip: 127.0.0.1
-      scheme: http
-    addr: http://127.0.0.1:8086/nacos
+    addr: http://localhost:8848/nacos
     nameSpace: test
     logDir: /log/nacos
     cacheDir: /nacos/cache

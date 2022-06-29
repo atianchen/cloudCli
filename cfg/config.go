@@ -2,6 +2,7 @@ package cfg
 
 import (
 	"cloudCli/common"
+	"cloudCli/utils"
 	"gopkg.in/yaml.v3"
 	"log"
 	"os"
@@ -75,34 +76,7 @@ func ConfigMapping(key string, target interface{}) {
 	config := GetConfig(key)
 	if config != nil && reflect.ValueOf(config).Kind() == reflect.Map {
 		data := config.(map[string]interface{})
-		targetType := reflect.TypeOf(target).Elem()
-		targetVal := reflect.ValueOf(target).Elem()
-		fieldNum := targetType.NumField()
-		for i := 0; i < fieldNum; i++ {
-			field := targetType.Field(i)
-			rs, _ := data[fieldConfigName(field)]
-			if rs != nil {
-				/**
-				如果类型是Struct Pointer，则创建实例，递归调用
-				*/
-				if field.Type.Kind() == reflect.Pointer {
-					nv := reflect.New(field.Type.Elem()).Interface()
-					ConfigMapping(key+"."+fieldConfigName(field), nv)
-					targetVal.Field(i).Set(reflect.ValueOf(nv))
-				} else {
-					targetVal.Field(i).SetString(rs.(string))
-				}
-			}
-		}
-	}
-}
-
-func fieldConfigName(field reflect.StructField) string {
-	tag := field.Tag
-	if tag == "" {
-		return strings.ToLower(field.Name)
-	} else {
-		return tag.Get("config")
+		utils.MapToStruct(data, target, "config")
 	}
 }
 

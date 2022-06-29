@@ -7,16 +7,15 @@ import (
 	"testing"
 )
 
-/**
- *
- * @author jensen.chen
- * @date 2022/6/28
- */
 func TestNacos(t *testing.T) {
 	cfg.Load("../config.yml")
-	ncfg := driver.NacosConfig{}
-	cfg.ConfigMapping("cli.nacos", &ncfg)
-	fmt.Println(ncfg.LogDir)
-	fmt.Println(ncfg.NameSpace)
-	fmt.Println(ncfg.Server.Ip)
+	client, _ := driver.CreateNacosClientFromConfig()
+	client.PublishConfig("my1.yml", "my", "test")   //发布配置
+	content, _ := client.GetConfig("my1.yml", "my") //获取配置
+	fmt.Println(content)
+	/*	ncfg := driver.NacosConfig{}
+		cfg.ConfigMapping("cli.nacos", &ncfg)
+		fmt.Println(ncfg.LogDir)
+		fmt.Println(ncfg.NameSpace)
+		fmt.Println(ncfg.Server.Ip)*/
 }

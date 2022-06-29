@@ -25,7 +25,7 @@ type Protocol struct {
 从HTTP地址 获取Protocol
 http://127.0.0.1:8086/nacos
 */
-func protocolFromHttp(url string) (*Protocol, error) {
+func ProtocolFromHttp(url string) (*Protocol, error) {
 	if len(url) < 8 {
 		return nil, errors.New("InValid Url")
 	}
@@ -33,10 +33,10 @@ func protocolFromHttp(url string) (*Protocol, error) {
 	index := strings.Index(url, "https")
 	if index == 0 {
 		pt.Schema = "https"
-		url = url[8 : len(url)-1]
+		url = url[8:len(url)]
 	} else {
 		pt.Schema = "http"
-		url = url[7 : len(url)-1]
+		url = url[7:len(url)]
 	}
 	fmt.Println("url:" + url)
 	ary := strings.Split(url, "/")
