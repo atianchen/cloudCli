@@ -51,7 +51,7 @@ func CreateNacosClientFromConfig() (*NacosClient, error) {
 	*/
 	nacosCfg := NacosConfig{}
 	cfg.ConfigMapping("cli.nacos", &nacosCfg)
-	addr := cfg.GetConfig("cli.nacos.addr")
+	addr, _ := cfg.GetConfig("cli.nacos.addr")
 	if addr != nil {
 		protocol, err := utils.ProtocolFromHttp(addr.(string))
 		if err != nil {
@@ -150,10 +150,11 @@ func (inst *NacosClient) RegisteInstance(instance ServiceInstance) (bool, error)
 		ClusterName: "cluster-a", // default value is DEFAULT
 		GroupName:   "group-a",*/
 	param := vo.RegisterInstanceParam{
-		Ip:        instance.Ip,
-		Weight:    1,
-		Port:      instance.Port,
-		Ephemeral: true,
+		Ip:          instance.Ip,
+		ServiceName: instance.Name,
+		Weight:      1,
+		Port:        instance.Port,
+		Ephemeral:   true,
 	}
 	if len(instance.Group) > 0 {
 		param.GroupName = instance.Group
@@ -210,11 +211,11 @@ func (inst *NacosClient) GetRegisterInstance(name string, group string, clusters
 	instances := make([]ServiceInstance, len(result.Hosts))
 	for index, inst := range result.Hosts {
 		instances[index] = ServiceInstance{
-			Ip:          inst.Ip,
-			Port:        inst.Port,
-			Cluster:     inst.ClusterName,
-			ServiceName: inst.ServiceName,
-			Data:        inst.Metadata,
+			Ip:      inst.Ip,
+			Port:    inst.Port,
+			Cluster: inst.ClusterName,
+			Name:    inst.ServiceName,
+			Data:    inst.Metadata,
 		}
 	}
 	return instances, nil

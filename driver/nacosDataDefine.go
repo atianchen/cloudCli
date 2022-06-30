@@ -6,10 +6,10 @@ package driver
  * @date 2022/6/29
  */
 type ServiceInstance struct {
-	Ip          string
-	Port        uint64
-	ServiceName string
-	Cluster     string
-	Group       string
-	Data        map[string]string //附加数据
+	Ip      string
+	Port    uint64
+	Name    string
+	Cluster string
+	Group   string
+	Data    map[string]string //附加数据
 }

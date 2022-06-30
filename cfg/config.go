@@ -3,6 +3,7 @@ package cfg
 import (
 	"cloudCli/common"
 	"cloudCli/utils"
+	"errors"
 	"gopkg.in/yaml.v3"
 	"log"
 	"os"
@@ -26,12 +27,15 @@ var CliConfig Config = Config{}
  * 配置的KEY可以用.分割，比如inspect.cron\
  * 如果找不到配置,则返回指定的默认值
  */
-func GetConfigValue(key string, defaultValue interface{}) interface{} {
-	val := GetConfig(key)
+func GetConfigValue(key string, defaultValue interface{}) (interface{}, error) {
+	val, err := GetConfig(key)
+	if err != nil {
+		return defaultValue, nil
+	}
 	if val != nil {
-		return val
+		return val, nil
 	} else {
-		return defaultValue
+		return defaultValue, nil
 	}
 }
 
@@ -39,7 +43,7 @@ func GetConfigValue(key string, defaultValue interface{}) interface{} {
  * 获取配置
  * 配置的KEY可以用.分割，比如inspect.cron
  */
-func GetConfig(key string) interface{} {
+func GetConfig(key string) (interface{}, error) {
 	keyAry := strings.Split(key, common.KEY_DELIMITER)
 	var val interface{} = CliConfig.Data
 	for _, itemKey := range keyAry {
@@ -49,7 +53,11 @@ func GetConfig(key string) interface{} {
 		}
 
 	}
-	return val
+	if val != nil {
+		return val, nil
+	} else {
+		return nil, errors.New("Config Not Exists")
+	}
 }
 
 func GetKeys(data map[string]interface{}) []string {
@@ -73,7 +81,7 @@ func getMapValue(data map[string]interface{}, key string) interface{} {
 @target Struct指针
 */
 func ConfigMapping(key string, target interface{}) {
-	config := GetConfig(key)
+	config, _ := GetConfig(key)
 	if config != nil && reflect.ValueOf(config).Kind() == reflect.Map {
 		data := config.(map[string]interface{})
 		utils.MapToStruct(data, target, "config")

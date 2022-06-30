@@ -4,6 +4,7 @@ import (
 	"cloudCli/cfg"
 	"cloudCli/channel"
 	"cloudCli/ctx"
+	"cloudCli/node/core"
 	"cloudCli/utils/log"
 	"reflect"
 	"strings"
@@ -13,9 +14,9 @@ import (
  * 系统控制台，用于系统的一些初始化和固有TASK执行
  * 控制台是系统的根TASK
  */
-var preSetTasks = map[string]reflect.Type{"plugin": reflect.TypeOf(CronNode{})} //预置任务
+var preSetTasks = map[string]reflect.Type{"CronNode": reflect.TypeOf(CronNode{})} //预置任务
 
-var sysTasks = []Node{&DbManager{}, &Gin{}}
+var sysTasks = []Node{&DbManager{}, &Gin{}, &core.SysTaskNode{}}
 
 type Console struct {
 	AbstractNode
@@ -25,7 +26,7 @@ func (c *Console) Init() {
 	/**
 	 * 需要根据配置决定需要执行那些系统任务
 	 */
-	taskConfig := cfg.GetConfig("cli.node")
+	taskConfig, _ := cfg.GetConfig("cli.node")
 	if taskConfig != nil {
 		taskAry := strings.Split(taskConfig.(string), ",")
 		for _, taskName := range taskAry {

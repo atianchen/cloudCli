@@ -38,7 +38,7 @@ func (*Gin) Start(context ctx.Context) {
 /**
 处理消息
 */
-func (b *Gin) HandleMessage(msg interface{}) *AsyncResponse {
+func (b *Gin) HandleMessage(msg interface{}) *channel2.AsyncResponse {
 	switch msg.(type) {
 	case channel2.CommandMessage:
 		{

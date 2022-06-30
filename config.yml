@@ -1,4 +1,9 @@
 cli:
+  cloud:
+    name: Test
+    ip: 127.0.0.1
+    group:  test
+    cluster:  test
   log:
     console:
       logLevel: info
@@ -9,12 +14,11 @@ cli:
       path: d:/work/db2
   node: CronNode
   timer:
-    configGuard: 0/20 * * * *
-    inpectNode: 0/40 * * * *
+    sysTask: 0/5 * * * *
   nacos:
     addr: http://localhost:8848/nacos
     nameSpace: test
     logDir: /log/nacos
     cacheDir: /nacos/cache
-  inpect:
-    profile: profile.json
+  profile-inspect:
+    config: profile.json

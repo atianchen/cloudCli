@@ -13,7 +13,8 @@ func (o *OkConfig) Ok(c *gin.Context) {
 
 func (o *OkConfig) index(c *gin.Context) {
 	ct := channel.GetChan("PluginTask")
-	ct <- channel.RequestMessage{Payload: c.Get("userName")}
+	u, _ := c.Get("userName")
+	ct <- channel.RequestMessage{Payload: u}
 	select {
 	case _ = <-ct:
 		c.HTML(http.StatusOK, "cloud.html", "Success")

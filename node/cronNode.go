@@ -3,6 +3,8 @@ package node
 import (
 	"cloudCli/cfg"
 	"cloudCli/channel"
+	"cloudCli/ctx"
+	"cloudCli/utils/log"
 	"github.com/robfig/cron/v3"
 	"reflect"
 )
@@ -38,20 +40,26 @@ func (t *CronNode) Init() {
 		}*/
 }
 
-func (t *CronNode) Start() {
+func (t *CronNode) Start(context ctx.Context) {
 	t.cronInstance = cron.New()
-	cronExpress := cfg.GetConfig("cli.timer")
+	cronExpress, _ := cfg.GetConfig("cli.timer")
 	if cronExpress != nil {
 		for node, express := range cronExpress.(map[string]interface{}) {
-			t.cronInstance.AddFunc(express.(string), func() {
+			entryId, err := t.cronInstance.AddFunc(express.(string), func() {
 				/**
 				定时任务通知
 				*/
+				log.Info("OnTime ", node)
 				nc := channel.GetChan(node)
 				if nc != nil {
 					nc <- channel.BulidOnTimeMessage(nil)
 				}
 			})
+			if err != nil {
+				log.Error("Timer Start Error:", err.Error(), node, express)
+			} else {
+				log.Error("Timer Init Success:", entryId, node, express)
+			}
 		}
 	}
 }

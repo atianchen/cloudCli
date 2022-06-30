@@ -89,7 +89,7 @@ func (l *Log) LogLevel(logLevel string) zapcore.Level {
 func (l *Log) Init() {
 
 	// 识别日志配置文件
-	logConfig := cfg.GetConfig("cli.log")
+	logConfig, _ := cfg.GetConfig("cli.log")
 	var keys []string
 	if logConfig != nil {
 		m := logConfig.(map[string]interface{})
@@ -211,7 +211,7 @@ func GinRecovery(stack bool) gin.HandlerFunc {
 }
 
 func csWriter(consoleCfg *ConsoleConfig) {
-	csConfig := cfg.GetConfig("cli.log.console")
+	csConfig, _ := cfg.GetConfig("cli.log.console")
 	if csConfig == nil {
 		return
 	}
@@ -223,7 +223,7 @@ func csWriter(consoleCfg *ConsoleConfig) {
 }
 
 func fileWriter(logout LogOut) LogOut {
-	fileConfig := cfg.GetConfig("cli.log.file")
+	fileConfig, _ := cfg.GetConfig("cli.log.file")
 	if fileConfig == nil {
 		return nil
 	}

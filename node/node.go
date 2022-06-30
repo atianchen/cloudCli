@@ -68,7 +68,7 @@ L:
 /**
 处理消息
 */
-func (b *AbstractNode) HandleMessage(msg interface{}) *AsyncResponse {
+func (b *AbstractNode) HandleMessage(msg interface{}) *channel2.AsyncResponse {
 
 	return nil
 }

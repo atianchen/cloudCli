@@ -50,7 +50,7 @@ func (d *DbManager) initNoSqlDb() db.NoSqlDb {
 	dbConfig := db.FileDbConfig{}
 	dir, _ := os.Getwd()
 	dbConfig.DbFile = dir + "/db"
-	cfgVal := cfg.GetConfig("cli.db.badger.path")
+	cfgVal, _ := cfg.GetConfig("cli.db.badger.path")
 	if cfgVal != nil {
 		dbConfig.DbFile = cfgVal.(string)
 	}
@@ -66,7 +66,7 @@ func (d *DbManager) initSqlDb() db.SqlDb {
 	dbConfig := db.FileDbConfig{}
 	dir, _ := os.Getwd()
 	dbConfig.DbFile = dir + "/db/cli.db"
-	cfgVal := cfg.GetConfig("cli.db.sqllite3.path")
+	cfgVal, _ := cfg.GetConfig("cli.db.sqllite3.path")
 	if cfgVal != nil {
 		dbConfig.DbFile = cfgVal.(string)
 	}
@@ -74,6 +74,7 @@ func (d *DbManager) initSqlDb() db.SqlDb {
 	db := &db.SqlLiteDb{}
 	db.Connect(dbConfig)
 	return db
+
 }
 
 func (d *DbManager) Start(context ctx.Context) {
