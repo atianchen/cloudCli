@@ -77,7 +77,7 @@ func (d *DbManager) initSqlDb() db.SqlDb {
 
 }
 
-func (d *DbManager) Start(context ctx.Context) {
+func (d *DbManager) Start(context *ctx.NodeContext) {
 
 }
 

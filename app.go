@@ -3,6 +3,7 @@ package main
 import (
 	"cloudCli/cfg"
 	"cloudCli/node"
+	"cloudCli/node/core"
 	"cloudCli/utils/log"
 	"os"
 	"os/signal"
@@ -29,7 +30,7 @@ func main() {
 	sysCh := make(chan os.Signal, 1)
 	signal.Notify(sysCh, syscall.SIGKILL, syscall.SIGINT)
 
-	var rootTask node.Node = &node.Console{}
+	var rootTask node.Node = &core.Console{}
 	rootTask.Init()
 	rootTask.Start(nil)
 

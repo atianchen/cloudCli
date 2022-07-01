@@ -1,10 +1,10 @@
-package node
+package core
 
 import (
 	"cloudCli/cfg"
 	"cloudCli/channel"
 	"cloudCli/ctx"
-	"cloudCli/node/core"
+	"cloudCli/node"
 	"cloudCli/utils/log"
 	"reflect"
 	"strings"
@@ -14,12 +14,12 @@ import (
  * 系统控制台，用于系统的一些初始化和固有TASK执行
  * 控制台是系统的根TASK
  */
-var preSetTasks = map[string]reflect.Type{"CronNode": reflect.TypeOf(CronNode{})} //预置任务
+var preSetTasks = map[string]reflect.Type{"CronNode": reflect.TypeOf(node.CronNode{})} //预置任务
 
-var sysTasks = []Node{&DbManager{}, &Gin{}, &core.SysTaskNode{}}
+var sysTasks = []node.Node{&node.DbManager{}, &node.Gin{}, &SysTaskNode{}}
 
 type Console struct {
-	AbstractNode
+	node.AbstractNode
 }
 
 func (c *Console) Init() {
@@ -30,7 +30,7 @@ func (c *Console) Init() {
 	if taskConfig != nil {
 		taskAry := strings.Split(taskConfig.(string), ",")
 		for _, taskName := range taskAry {
-			task := reflect.New(preSetTasks[taskName]).Interface().(Node)
+			task := reflect.New(preSetTasks[taskName]).Interface().(node.Node)
 
 			sysTasks = append(sysTasks, task)
 		}
@@ -43,11 +43,13 @@ func (c *Console) Init() {
 	}
 }
 
-func (c *Console) Start(context ctx.Context) {
+func (c *Console) Start(context *ctx.NodeContext) {
 
 	for _, task := range sysTasks {
 		log.Infof("Start Task %s", task.Name())
-		task.Start(ctx.CreateContext(task))
+		ntx := ctx.CreateNodeContext(task)
+		task.Start(ntx)
+		go task.OnMsgReceive(ntx.Channel)
 	}
 }
 

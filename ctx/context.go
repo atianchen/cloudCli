@@ -20,7 +20,7 @@ type Context interface {
 /**
  * 默认环境变量
  */
-type DefaultContext struct {
+type NodeContext struct {
 	common.BaseObj
 	common.ModalMap
 	/*
@@ -32,7 +32,7 @@ type DefaultContext struct {
 /**
 初始化环境变量
 */
-func (ctx *DefaultContext) Init(target interface{}) {
+func (ctx *NodeContext) Init(target interface{}) {
 	/**
 	通道
 	*/
@@ -44,9 +44,9 @@ func (ctx *DefaultContext) Init(target interface{}) {
 /**
  * 创建默认Context
  */
-func CreateContext(target interface{}) Context {
-	ctx := &DefaultContext{}
+func CreateNodeContext(target interface{}) *NodeContext {
+	ctx := &NodeContext{}
 	ctx.Init(target)
 	ctx.AttrMap = make(map[string]interface{})
-	return ctx //(Context)(unsafe.Pointer(ctx))
+	return ctx
 }

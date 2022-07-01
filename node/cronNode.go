@@ -31,7 +31,7 @@ func (t *CronNode) Init() {
 			_, err := cronInstance.AddFunc("* * * * *", func() {
 				for _, instance := range t.PluginList {
 
-					instance.Execute(ctx.CreateContext(instance), pluginParams)
+					instance.Execute(ctx.CreateNodeContext(instance), pluginParams)
 				}
 			})
 			if err != nil {
@@ -40,7 +40,7 @@ func (t *CronNode) Init() {
 		}*/
 }
 
-func (t *CronNode) Start(context ctx.Context) {
+func (t *CronNode) Start(context *ctx.NodeContext) {
 	t.cronInstance = cron.New()
 	cronExpress, _ := cfg.GetConfig("cli.timer")
 	if cronExpress != nil {
@@ -61,6 +61,7 @@ func (t *CronNode) Start(context ctx.Context) {
 				log.Error("Timer Init Success:", entryId, node, express)
 			}
 		}
+		t.cronInstance.Start()
 	}
 }
 

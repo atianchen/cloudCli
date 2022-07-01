@@ -34,7 +34,7 @@ func (t *SysTaskNode) Init() {
 	t.serviceInfo.Data = make(map[string]string)
 }
 
-func (t *SysTaskNode) Start(context ctx.Context) {
+func (t *SysTaskNode) Start(context *ctx.NodeContext) {
 	nc, err := driver.CreateNacosClientFromConfig()
 	if err != nil {
 		log.Error(err.Error())
@@ -45,7 +45,7 @@ func (t *SysTaskNode) Start(context ctx.Context) {
 			log.Error("Register Service Error :" + err.Error())
 		}
 	}
-	//t.dispatch(
+
 }
 
 func (t *SysTaskNode) Stop() {
@@ -56,7 +56,7 @@ func (t *SysTaskNode) Name() string {
 	return "sysTask"
 }
 
-func (t *SysTaskNode) HandleMessage(msg interface{}) *channel2.AsyncResponse {
+func (t *SysTaskNode) OnMessageReceive(msg interface{}) *channel2.AsyncResponse {
 	switch msg.(type) {
 	case channel2.CommandMessage:
 		{

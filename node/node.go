@@ -21,10 +21,10 @@ type Node interface {
 	/**
 	 * 开始
 	 */
-	Start(context ctx.Context)
+	Start(context *ctx.NodeContext)
 
 	/**
-	 * 停止任
+	 * 停止
 	 */
 	Stop()
 
@@ -32,6 +32,11 @@ type Node interface {
 	 * 获取名称
 	 */
 	Name() string
+
+	/**
+	消息监听
+	*/
+	OnMsgReceive(channel chan interface{})
 }
 
 type AbstractNode struct {
@@ -44,7 +49,7 @@ func (t *AbstractNode) Name() string {
 /**
 消息分发
 */
-func (b *AbstractNode) dispatch(channel chan interface{}) {
+func (t *AbstractNode) OnMsgReceive(channel chan interface{}) {
 L:
 	for {
 
@@ -56,7 +61,7 @@ L:
 					if msg.(*channel2.CommandMessage).Name == "close" {
 						break L
 					} else {
-						b.HandleMessage(msg.(*channel2.Message))
+						t.HandleMessage(msg.(*channel2.Message))
 					}
 				}
 			}

@@ -14,12 +14,12 @@ type Gin struct {
 	AbstractNode
 }
 
-var cliCtx ctx.Context = ctx.CreateContext(nil)
+var cliCtx ctx.Context = ctx.CreateNodeContext(nil)
 
 func (*Gin) Init() {
 }
 
-func (*Gin) Start(context ctx.Context) {
+func (*Gin) Start(context *ctx.NodeContext) {
 	routers.Include(test.Routers)
 	r := routers.Init()
 	srv := &http.Server{
