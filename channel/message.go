@@ -38,7 +38,7 @@ func BuildCloseCommand() *CommandMessage {
 构建定时任务
 */
 func BulidOnTimeMessage(payload interface{}) *CommandMessage {
-	cmd := &CommandMessage{Name: MESSAGE_CLOSE}
+	cmd := &CommandMessage{Name: MESSAGE_ONTIME}
 	cmd.Payload = payload
 	return cmd
 }

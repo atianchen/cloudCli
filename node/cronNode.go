@@ -3,7 +3,6 @@ package node
 import (
 	"cloudCli/cfg"
 	"cloudCli/channel"
-	"cloudCli/ctx"
 	"cloudCli/utils/log"
 	"github.com/robfig/cron/v3"
 	"reflect"
@@ -40,8 +39,8 @@ func (t *CronNode) Init() {
 		}*/
 }
 
-func (t *CronNode) Start(context *ctx.NodeContext) {
-	t.cronInstance = cron.New()
+func (t *CronNode) Start(context *NodeContext) {
+	t.cronInstance = cron.New(cron.WithSeconds())
 	cronExpress, _ := cfg.GetConfig("cli.timer")
 	if cronExpress != nil {
 		for node, express := range cronExpress.(map[string]interface{}) {
@@ -49,20 +48,37 @@ func (t *CronNode) Start(context *ctx.NodeContext) {
 				/**
 				定时任务通知
 				*/
-				log.Info("OnTime ", node)
-				nc := channel.GetChan(node)
-				if nc != nil {
-					nc <- channel.BulidOnTimeMessage(nil)
-				}
+				onTimeExecute(node)
 			})
 			if err != nil {
 				log.Error("Timer Start Error:", err.Error(), node, express)
 			} else {
-				log.Error("Timer Init Success:", entryId, node, express)
+				log.Info("Timer Init Success:", entryId, node, express)
 			}
 		}
 		t.cronInstance.Start()
 	}
+}
+
+func onTimeExecute(node string) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Error("Time Execute Error:" + node)
+		}
+	}()
+	log.Info("OnTime ", node)
+	nc := channel.GetChan(node)
+	if nc != nil {
+		nc <- channel.BulidOnTimeMessage(nil)
+	}
+}
+
+func (t *CronNode) HandleMessage(msg interface{}) {
+
+}
+
+func (t *CronNode) GetMsgHandler() MsgHandler {
+	return t
 }
 
 func (t *CronNode) Stop() {

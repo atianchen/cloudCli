@@ -173,6 +173,25 @@ func (inst *NacosClient) RegisteInstance(instance ServiceInstance) (bool, error)
 	return inst.namingClient.RegisterInstance(param)
 }
 
+func (inst *NacosClient) UpdateRegisteInstance(instance ServiceInstance) (bool, error) {
+	param := vo.UpdateInstanceParam{
+		Ip:          instance.Ip,
+		ServiceName: instance.Name,
+		Weight:      1,
+		Port:        instance.Port,
+		Ephemeral:   true,
+	}
+	if len(instance.Group) > 0 {
+		param.GroupName = instance.Group
+	}
+	if len(instance.Cluster) > 0 {
+		param.ClusterName = instance.Cluster
+	}
+	metaData := make(map[string]string)
+	metaData["ts"] = strconv.Itoa(int(time.Now().UnixNano() / 1e6))
+	return inst.namingClient.UpdateInstance(param)
+}
+
 /**
 服务取消注册
 */

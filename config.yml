@@ -14,7 +14,7 @@ cli:
       path: d:/work/db2
   node: CronNode
   timer:
-    sysTask: 0/5 * * * *
+    sysTask: 0 0/10 * ? * ?
   nacos:
     addr: http://localhost:8848/nacos
     nameSpace: test

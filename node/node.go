@@ -2,7 +2,6 @@ package node
 
 import (
 	channel2 "cloudCli/channel"
-	"cloudCli/ctx"
 	"reflect"
 )
 
@@ -11,6 +10,12 @@ import (
  * @author jensen.chen
  * @date 2022-05-20
  */
+/**
+消息处理
+*/
+type MsgHandler interface {
+	HandleMessage(msg interface{})
+}
 
 /**
  * 任务
@@ -21,7 +26,7 @@ type Node interface {
 	/**
 	 * 开始
 	 */
-	Start(context *ctx.NodeContext)
+	Start(context *NodeContext)
 
 	/**
 	 * 停止
@@ -36,7 +41,9 @@ type Node interface {
 	/**
 	消息监听
 	*/
-	OnMsgReceive(channel chan interface{})
+	GetMsgHandler() MsgHandler
+
+	MessageReceive(target Node, channel chan interface{})
 }
 
 type AbstractNode struct {
@@ -47,33 +54,35 @@ func (t *AbstractNode) Name() string {
 }
 
 /**
-消息分发
+消息接收
 */
-func (t *AbstractNode) OnMsgReceive(channel chan interface{}) {
+func (t *AbstractNode) MessageReceive(target Node, channel chan interface{}) {
 L:
 	for {
-
 		select {
 		case msg := <-channel:
 			switch msg.(type) {
-			case channel2.CommandMessage:
+			case *channel2.CommandMessage:
 				{
 					if msg.(*channel2.CommandMessage).Name == "close" {
 						break L
 					} else {
-						t.HandleMessage(msg.(*channel2.Message))
+						handler := target.GetMsgHandler()
+						if handler != nil {
+							handler.HandleMessage(msg)
+						}
+					}
+				}
+			default:
+				{
+					handler := target.GetMsgHandler()
+					if handler != nil {
+						handler.HandleMessage(msg)
 					}
 				}
 			}
 		default:
+
 		}
 	}
-}
-
-/**
-处理消息
-*/
-func (b *AbstractNode) HandleMessage(msg interface{}) *channel2.AsyncResponse {
-
-	return nil
 }

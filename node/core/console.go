@@ -3,7 +3,6 @@ package core
 import (
 	"cloudCli/cfg"
 	"cloudCli/channel"
-	"cloudCli/ctx"
 	"cloudCli/node"
 	"cloudCli/utils/log"
 	"reflect"
@@ -42,14 +41,21 @@ func (c *Console) Init() {
 		task.Init()
 	}
 }
+func (c *Console) GetMsgHandler() node.MsgHandler {
+	return nil
+}
 
-func (c *Console) Start(context *ctx.NodeContext) {
+func (c *Console) MessageReceive(target node.Node, channel chan interface{}) {
+
+}
+
+func (c *Console) Start(context *node.NodeContext) {
 
 	for _, task := range sysTasks {
 		log.Infof("Start Task %s", task.Name())
-		ntx := ctx.CreateNodeContext(task)
+		ntx := node.CreateNodeContext(task)
 		task.Start(ntx)
-		go task.OnMsgReceive(ntx.Channel)
+		go task.MessageReceive(task, ntx.Channel)
 	}
 }
 

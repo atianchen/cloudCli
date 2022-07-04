@@ -3,7 +3,6 @@ package core
 import (
 	"cloudCli/cfg"
 	channel2 "cloudCli/channel"
-	"cloudCli/ctx"
 	"cloudCli/driver"
 	"cloudCli/node"
 	"cloudCli/utils"
@@ -22,6 +21,31 @@ type SysTaskNode struct {
 	nacosClient *driver.NacosClient
 }
 
+func (t *SysTaskNode) HandleMessage(msg interface{}) {
+	switch msg.(type) {
+	case *channel2.CommandMessage:
+		{
+			switch msg.(*channel2.CommandMessage).Name {
+			case channel2.MESSAGE_ONTIME:
+				{
+					/**
+					  更新注册的时间戳
+					*/
+					if t.serviceInfo.Name != "" && t.nacosClient != nil {
+						log.Info("Update Service RegisterInfo:" + t.serviceInfo.Name)
+						t.nacosClient.UpdateRegisteInstance(t.serviceInfo)
+					}
+
+				}
+			}
+		}
+	}
+}
+
+func (d *SysTaskNode) GetMsgHandler() node.MsgHandler {
+	return d
+}
+
 func (t *SysTaskNode) Init() {
 	serviceConfig, err := cfg.GetConfig("cli.cloud")
 	if err != nil {
@@ -34,7 +58,7 @@ func (t *SysTaskNode) Init() {
 	t.serviceInfo.Data = make(map[string]string)
 }
 
-func (t *SysTaskNode) Start(context *ctx.NodeContext) {
+func (t *SysTaskNode) Start(context *node.NodeContext) {
 	nc, err := driver.CreateNacosClientFromConfig()
 	if err != nil {
 		log.Error(err.Error())
@@ -54,23 +78,4 @@ func (t *SysTaskNode) Stop() {
 
 func (t *SysTaskNode) Name() string {
 	return "sysTask"
-}
-
-func (t *SysTaskNode) OnMessageReceive(msg interface{}) *channel2.AsyncResponse {
-	switch msg.(type) {
-	case channel2.CommandMessage:
-		{
-			switch msg.(*channel2.CommandMessage).Name {
-			case channel2.MESSAGE_ONTIME:
-				{
-					if t.serviceInfo.Name != "" && t.nacosClient != nil {
-						log.Info("Update Service RegisterInfo:" + t.serviceInfo.Name)
-						t.nacosClient.RegisteInstance(t.serviceInfo)
-					}
-
-				}
-			}
-		}
-	}
-	return nil
 }

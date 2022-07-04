@@ -2,7 +2,6 @@ package node
 
 import (
 	"cloudCli/cfg"
-	"cloudCli/ctx"
 	"cloudCli/db"
 	"cloudCli/utils/log"
 	"os"
@@ -34,6 +33,14 @@ const tableCreateSql string = `
  */
 type DbManager struct {
 	AbstractNode
+}
+
+func (d *DbManager) HandleMessage(msg interface{}) {
+
+}
+
+func (d *DbManager) GetMsgHandler() MsgHandler {
+	return d
 }
 
 func (d *DbManager) Init() {
@@ -77,7 +84,7 @@ func (d *DbManager) initSqlDb() db.SqlDb {
 
 }
 
-func (d *DbManager) Start(context *ctx.NodeContext) {
+func (d *DbManager) Start(context *NodeContext) {
 
 }
 

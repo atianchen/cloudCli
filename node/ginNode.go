@@ -1,7 +1,6 @@
 package node
 
 import (
-	channel2 "cloudCli/channel"
 	"cloudCli/ctx"
 	"cloudCli/gin/controller/test"
 	"cloudCli/gin/routers"
@@ -14,12 +13,12 @@ type Gin struct {
 	AbstractNode
 }
 
-var cliCtx ctx.Context = ctx.CreateNodeContext(nil)
+var cliCtx ctx.Context = CreateNodeContext(nil)
 
 func (*Gin) Init() {
 }
 
-func (*Gin) Start(context *ctx.NodeContext) {
+func (*Gin) Start(context *NodeContext) {
 	routers.Include(test.Routers)
 	r := routers.Init()
 	srv := &http.Server{
@@ -35,22 +34,12 @@ func (*Gin) Start(context *ctx.NodeContext) {
 	}()
 }
 
-/**
-处理消息
-*/
-func (b *Gin) HandleMessage(msg interface{}) *channel2.AsyncResponse {
-	switch msg.(type) {
-	case channel2.CommandMessage:
-		{
-			switch msg.(*channel2.CommandMessage).Name {
-			case channel2.MESSAGE_ONTIME:
-				{
-					//执行定时业务逻辑
-				}
-			}
-		}
-	}
-	return nil
+func (d *Gin) HandleMessage(msg interface{}) {
+
+}
+
+func (d *Gin) GetMsgHandler() MsgHandler {
+	return d
 }
 
 func (*Gin) Stop() {
