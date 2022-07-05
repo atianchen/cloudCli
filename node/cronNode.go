@@ -40,7 +40,7 @@ func (t *CronNode) Init() {
 }
 
 func (t *CronNode) Start(context *NodeContext) {
-	t.cronInstance = cron.New(cron.WithSeconds())
+	t.cronInstance = cron.New()
 	cronExpress, _ := cfg.GetConfig("cli.timer")
 	if cronExpress != nil {
 		for node, express := range cronExpress.(map[string]interface{}) {

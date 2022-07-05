@@ -12,9 +12,9 @@ cli:
   db:
     badger:
       path: d:/work/db2
-  node: CronNode
+  node: CronNode,ProfileInspect
   timer:
-    sysTask: 0 0/10 * ? * ?
+    sysTask: '*/10 * * * *'
   nacos:
     addr: http://localhost:8848/nacos
     nameSpace: test

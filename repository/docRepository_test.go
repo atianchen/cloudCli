@@ -18,7 +18,7 @@ func TestInsert(t *testing.T) {
 	repository := DocRepository{}
 	fmt.Println(repository.Save(&doc))
 	fmt.Println("--------------")
-	doc1, err := repository.GetByPrimary(1)
+	doc1, err := repository.GetByPrimary("1")
 	fmt.Println(err)
 	fmt.Println(doc1.Name)
 }

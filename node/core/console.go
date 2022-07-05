@@ -4,6 +4,7 @@ import (
 	"cloudCli/cfg"
 	"cloudCli/channel"
 	"cloudCli/node"
+	"cloudCli/node/profile"
 	"cloudCli/utils/log"
 	"reflect"
 	"strings"
@@ -13,7 +14,7 @@ import (
  * 系统控制台，用于系统的一些初始化和固有TASK执行
  * 控制台是系统的根TASK
  */
-var preSetTasks = map[string]reflect.Type{"CronNode": reflect.TypeOf(node.CronNode{})} //预置任务
+var preSetTasks = map[string]reflect.Type{"CronNode": reflect.TypeOf(node.CronNode{}), "ProfileInspect": reflect.TypeOf(profile.ProfileInspect{})} //预置任务
 
 var sysTasks = []node.Node{&node.DbManager{}, &node.Gin{}, &SysTaskNode{}}
 
