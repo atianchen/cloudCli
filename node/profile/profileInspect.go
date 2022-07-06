@@ -10,6 +10,7 @@ import (
 	"cloudCli/utils/log"
 	"cloudCli/utils/timeUtils"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"os"
 	"time"
@@ -140,6 +141,9 @@ func (p *ProfileInspect) HandleMessage(msg interface{}) {
 	}
 }
 
+/**
+检测文件内容是否被变更
+*/
 func (p *ProfileInspect) checkFile(info *domain.DocInfo) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -181,6 +185,31 @@ func (p *ProfileInspect) saveChangeHis(od *domain.DocInfo, nd *domain.DocInfo) {
 	if err != nil {
 		log.Error("Save Change History Exception ", err)
 	} else {
-		log.Error("Save Change History Exception ", od.Path)
+		log.Error("Save Change History ", od.Path)
 	}
+}
+
+/**
+更新变更历史的处理信息
+@handler 处理人
+@opinion 处理意见
+*/
+func (p *ProfileInspect) UpdateHistoryStatus(id string, handler string, opinion string) error {
+	docHis, err := p.docHisRepository.GetByPrimary(id)
+	if err == nil {
+		time := timeUtils.TimeConfig{time.Now()}
+		docHis.Handler = handler
+		docHis.Opinion = opinion
+		docHis.HandleTime = time.Unix()
+		return p.docHisRepository.Update(docHis)
+	} else {
+		return errors.New("Spec DocHistory Not Found")
+	}
+}
+
+/**
+还原配置文件的原始内容
+*/
+func (p *ProfileInspect) RestoreChangedContent(id string, handler string, opinion string) error {
+	return nil
 }
