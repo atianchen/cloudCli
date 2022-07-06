@@ -1,4 +1,8 @@
 [{
-  "dir": "D:\\work\\project\\cug\\cug-iportal-main\\src\\main\\resources",
+  "dir": "D:\\tmp",
   "expression": "applicationContext.xml"
+},{
+  "dir":"D:\\tmp",
+  "expression": "gateway-1.0.jar",
+  "nestedPath": "BOOT-INF/classes/bootstrap.yml"
 }]

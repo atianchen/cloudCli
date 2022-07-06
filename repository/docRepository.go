@@ -20,8 +20,8 @@ type DocRepository struct {
 func (r *DocRepository) Save(doc *domain.DocInfo) error {
 	time := timeUtils.TimeConfig{time.Now()}
 	doc.Ts = time.Unix()
-	_, err := db.DbInst.Execute("insert into inspect_doc (id,name,path,creator,create_time,modify_time,check_time,hash,ts) values (?,?,?,?,?,?,?,?,?)",
-		uuid.New(), doc.Name, doc.Path, doc.Creator, doc.CreateTime, doc.ModifyTime, doc.CheckTime, doc.Hash, doc.Ts)
+	_, err := db.DbInst.Execute("insert into inspect_doc (id,name,content,path,nested_path,creator,create_time,modify_time,check_time,hash,type,ts) values (?,?,?,?,?,?,?,?,?,?,?,?)",
+		uuid.New(), doc.Name, doc.Content, doc.Path, doc.NestedPath, doc.Creator, doc.CreateTime, doc.ModifyTime, doc.CheckTime, doc.Hash, doc.Type, doc.Ts)
 	log.Println(err)
 	return err
 
@@ -31,8 +31,8 @@ func (r *DocRepository) Save(doc *domain.DocInfo) error {
  * 更新
  */
 func (r *DocRepository) Update(doc *domain.DocInfo) error {
-	_, err := db.DbInst.Execute("update inspect_doc set name=?,path=?,creator=?,create_time=?,modify_time=?,check_time=?,hash=?,ts=? where id=?",
-		doc.Name, doc.Path, doc.Creator, doc.CreateTime, doc.ModifyTime, doc.CheckTime, doc.Hash, doc.Ts, doc.Id)
+	_, err := db.DbInst.Execute("update inspect_doc set name=?,content=?,path=?,nested_path=?,creator=?,create_time=?,modify_time=?,check_time=?,hash=?,type=?,ts=? where id=?",
+		doc.Name, doc.Content, doc.Path, doc.NestedPath, doc.Creator, doc.CreateTime, doc.ModifyTime, doc.CheckTime, doc.Hash, doc.Type, doc.Ts, doc.Id)
 	return err
 }
 
@@ -61,17 +61,29 @@ func (r *DocRepository) GetByPrimary(priKey string) (*domain.DocInfo, error) {
 }
 
 /**
+获取所有
+*/
+func (r *DocRepository) GetAll(dest *[]domain.DocInfo) error {
+	return db.DbInst.Query(dest, "select  * from inspect_doc")
+}
+
+/**
  * 执行查询
  */
-func (r *DocRepository) Query(dest []domain.DocInfo, sql string, args ...any) error {
+func (r *DocRepository) Query(dest *[]domain.DocInfo, sql string, args ...any) error {
 	return db.DbInst.Query(dest, sql, args)
 }
 
 /**
 根据路径查找文件
 */
-func (r *DocRepository) FindByPath(path string) (*domain.DocInfo, error) {
+func (r *DocRepository) FindByPath(path string, nestedPath string) (*domain.DocInfo, error) {
 	doc := domain.DocInfo{}
-	err := db.DbInst.Get(&doc, "select * from inspect_doc where path=?", path)
+	var err error
+	if len(nestedPath) > 0 {
+		err = db.DbInst.Get(&doc, "select * from inspect_doc where path=? and nested_path=?", path, nestedPath)
+	} else {
+		err = db.DbInst.Get(&doc, "select * from inspect_doc where path=?", path)
+	}
 	return &doc, err
 }

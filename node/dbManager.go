@@ -25,19 +25,25 @@ const tableCreateSql string = `
 			    "check_time" INTEGER NULL,
 			    "hash" VARCHAR(1000) NULL,
 			    "ts" INTEGER NULL,
+				"type" INTEGER NULL,
+				"content" TEXT NULL,
 			    "creator"  VARCHAR(255) NULL,
+				"nested_path" VARCHAR(255) NULL,
    				PRIMARY KEY('id')
 			);
-		CREATE TABLE IF NOT EXISTS  "inspect_doc_history" (
+		CREATE TABLE IF NOT EXISTS  "inspect_doc_his" (
 			    "id"  VARCHAR(100) NOT NULL,
+				"doc_id" VARCHAR(100) NOT NULL,
 			    "name" VARCHAR(255) NULL,
 			    "path" VARCHAR(400) NULL,
+				"nested_path" VARCHAR(255) NULL,
 			    "modify_time" INTEGER NULL,
 			    "raw" TEXT NULL,
 				"content" TEXT NULL,
 				"status" INTEGER NULL,
 				"handle_time" INTEGER NULL,
 				"handler" VARCHAR(255) NULL,
+				"opinion" VARCHAR(255) NULL,
 			    "ts" INTEGER NULL,
 			    "creator"  VARCHAR(255) NULL,
    				PRIMARY KEY('id')
