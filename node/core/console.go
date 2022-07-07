@@ -3,6 +3,7 @@ package core
 import (
 	"cloudCli/cfg"
 	"cloudCli/channel"
+	"cloudCli/gin"
 	"cloudCli/node"
 	"cloudCli/node/profile"
 	"cloudCli/utils/log"
@@ -16,7 +17,7 @@ import (
  */
 var preSetTasks = map[string]reflect.Type{"CronNode": reflect.TypeOf(node.CronNode{}), "ProfileInspect": reflect.TypeOf(profile.ProfileInspect{})} //预置任务
 
-var sysTasks = []node.Node{&node.DbManager{}, &node.Gin{}, &SysTaskNode{}}
+var sysTasks = []node.Node{&node.DbManager{}, &gin.Gin{}, &SysTaskNode{}}
 
 type Console struct {
 	node.AbstractNode

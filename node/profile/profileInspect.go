@@ -209,6 +209,7 @@ func (p *ProfileInspect) UpdateHistoryStatus(id string, handler string, opinion 
 
 /**
 还原配置文件的原始内容
+@id 变更记录ID
 */
 func (p *ProfileInspect) RestoreChangedContent(id string, handler string, opinion string) error {
 	return nil

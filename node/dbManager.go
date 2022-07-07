@@ -48,6 +48,18 @@ const tableCreateSql string = `
 			    "creator"  VARCHAR(255) NULL,
    				PRIMARY KEY('id')
 			);
+	CREATE TABLE IF NOT EXISTS  "sys_user" (
+			    "id"  VARCHAR(100) NOT NULL,
+			    "code" VARCHAR(255) NULL,
+			    "name" VARCHAR(255) NULL,
+				"pwd" VARCHAR(255) NULL,
+				"status" INTEGER NULL,
+				"role_id"  VARCHAR(100) NOT NULL,
+			    "ts" INTEGER NULL,
+			    "creator"  VARCHAR(255) NULL,
+   				PRIMARY KEY('id')
+			);
+	INSERT INTO "sys_user" (id,code,name,pwd,status,role_id) values (1,"admin","admin","21232f297a57a5a743894a0e4a801fc3",1,"1");
 		`
 
 /**

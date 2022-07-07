@@ -1,4 +1,6 @@
 cli:
+  server:
+    port: 9090
   cloud:
     name: Test
     ip: 127.0.0.1
