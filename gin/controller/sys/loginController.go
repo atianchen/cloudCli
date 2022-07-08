@@ -1,4 +1,4 @@
-package sysAction
+package sys
 
 import (
 	"cloudCli/gin/dto"
@@ -26,7 +26,7 @@ func (lc *LoginController) Init() {
  * @date 2022/7/7
  */
 func (lc *LoginController) Login(c *gin.Context) {
-	var param dto.LoginDto
+	var param LoginDto
 	c.BindJSON(&param)
 	user, err := lc.repository.FindByCode(param.Name)
 	if err != nil {

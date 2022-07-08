@@ -1,4 +1,4 @@
-package dto
+package sys
 
 /**
  * 系统模块相关DTO

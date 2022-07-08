@@ -1,11 +1,11 @@
-package sysAction
+package sys
 
 import (
 	"github.com/gin-gonic/gin"
 )
 
 /**
- *
+ * 用户登录
  * @author jensen.chen
  * @date 2022/7/7
  */
@@ -19,9 +19,9 @@ func (s SysAction) InitAction() {
 }
 func (s SysAction) AddRouter(g *gin.RouterGroup) {
 
-	upload := g.Group("/sys")
+	sysGroup := g.Group("/sys")
 	{
-		upload.POST("/login", s.loginAction.Login)
+		sysGroup.POST("/login", s.loginAction.Login)
 	}
 
 }

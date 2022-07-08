@@ -27,3 +27,10 @@ func BuildEmptySuccessMsg() *ResponseMsg {
 func BuildErrorMsg(error string) *ResponseMsg {
 	return &ResponseMsg{Code: RESPONSEMSG_CODE_ERROR, Error: error}
 }
+
+type PageResponse struct {
+	Page       int
+	Limit      int
+	TotalCount int
+	Items      any
+}

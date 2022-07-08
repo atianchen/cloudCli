@@ -99,9 +99,11 @@ func (p *ProfileInspect) registerFile(filePath string, nestedPath string) {
 			} else {
 				log.Info(" Save Orgin File Error ", err)
 			}
+		} else {
+			log.Info(" File Already registered ", doc.Name)
 		}
 	} else {
-		log.Error("Register File Error ", filePath)
+		log.Info(" File Already registered ", doc.Name)
 	}
 }
 
@@ -150,6 +152,9 @@ func (p *ProfileInspect) checkFile(info *domain.DocInfo) {
 			log.Error("Check File Exception:" + info.Name)
 		}
 	}()
+	time := timeUtils.TimeConfig{time.Now()}
+	info.CheckTime = time.Unix()
+	p.docRepository.UpdateCheckTime(info)
 	doc, err := ExtractDocInfo(info)
 	if err == nil {
 		/**

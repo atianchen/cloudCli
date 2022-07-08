@@ -36,6 +36,11 @@ func (r *DocRepository) Update(doc *domain.DocInfo) error {
 	return err
 }
 
+func (r *DocRepository) UpdateCheckTime(doc *domain.DocInfo) error {
+	_, err := db.DbInst.Execute("update inspect_doc set check_time=? where id=?", doc.CheckTime, doc.Id)
+	return err
+}
+
 /**
  * 删除
  */
@@ -72,6 +77,22 @@ func (r *DocRepository) GetAll(dest *[]domain.DocInfo) error {
  */
 func (r *DocRepository) Query(dest *[]domain.DocInfo, sql string, args ...any) error {
 	return db.DbInst.Query(dest, sql, args)
+}
+
+/**
+ * 分页查询
+ */
+func (r *DocRepository) PageQuery(dest *[]domain.DocInfo, startIndex int, limit int, name string) error {
+	sql := "select * from inspect_doc"
+	if len(name) > 0 {
+		sql += " where name=?"
+	}
+	sql += " limit ? offset  ?"
+	if len(name) > 0 {
+		return db.DbInst.Query(dest, sql, name, limit, startIndex)
+	} else {
+		return db.DbInst.Query(dest, sql, limit, startIndex)
+	}
 }
 
 /**

@@ -4,13 +4,14 @@ import (
 	"cloudCli/cfg"
 	"cloudCli/ctx"
 	"cloudCli/gin/controller"
-	"cloudCli/gin/controller/sysAction"
-	"cloudCli/gin/controller/test"
+	"cloudCli/gin/controller/profile"
+	"cloudCli/gin/controller/sys"
 	"cloudCli/gin/routers"
 	"cloudCli/node"
 	"cloudCli/utils/log"
 	"context"
 	"net/http"
+	"strconv"
 )
 
 type Gin struct {
@@ -18,7 +19,7 @@ type Gin struct {
 }
 
 var cliCtx ctx.Context = node.CreateNodeContext(nil)
-var actions = []controller.WebAction{sysAction.SysAction{}}
+var actions = []controller.WebAction{sys.SysAction{}, profile.ProfileAction{}}
 
 func (*Gin) Init() {
 }
@@ -26,7 +27,6 @@ func (*Gin) Init() {
 func (*Gin) Start(context *node.NodeContext) {
 	port, err := cfg.GetConfig("cli.server.port")
 	if err == nil {
-		routers.Include(test.Routers)
 		for _, action := range actions {
 			action.InitAction()
 			routers.Include(action.AddRouter)
@@ -34,7 +34,7 @@ func (*Gin) Start(context *node.NodeContext) {
 
 		r := routers.Init()
 		srv := &http.Server{
-			Addr:    ":" + port.(string),
+			Addr:    ":" + strconv.Itoa(port.(int)),
 			Handler: r,
 		}
 		cliCtx.AddAttr("gin.srv", srv)

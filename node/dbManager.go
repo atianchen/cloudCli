@@ -59,7 +59,7 @@ const tableCreateSql string = `
 			    "creator"  VARCHAR(255) NULL,
    				PRIMARY KEY('id')
 			);
-	INSERT INTO "sys_user" (id,code,name,pwd,status,role_id) values (1,"admin","admin","21232f297a57a5a743894a0e4a801fc3",1,"1");
+	INSERT INTO "sys_user" (id,code,name,pwd,status,role_id ,ts,creator) values (1,"admin","admin","21232f297a57a5a743894a0e4a801fc3",1,"1",0,"sys");
 		`
 
 /**
