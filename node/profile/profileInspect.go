@@ -165,6 +165,7 @@ func (p *ProfileInspect) checkFile(info *domain.DocInfo) {
 			p.saveChangeHis(info, doc)
 		} else {
 			log.Info("consistency check PASS ", doc.Path)
+
 		}
 	}
 }

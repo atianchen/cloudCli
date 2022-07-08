@@ -60,6 +60,14 @@ const tableCreateSql string = `
    				PRIMARY KEY('id')
 			);
 	INSERT INTO "sys_user" (id,code,name,pwd,status,role_id ,ts,creator) values (1,"admin","admin","21232f297a57a5a743894a0e4a801fc3",1,"1",0,"sys");
+	INSERT INTO "sys_param" (id,group,code,name,val) values (1,"mail","host","SMTP Server Address","");
+	INSERT INTO "sys_param" (id,group,code,name,val) values (2,"mail","port","SMTP Server Port","");
+	INSERT INTO "sys_param" (id,group,code,name,val) values (3,"mail","user","SMTP User Name","");
+	INSERT INTO "sys_param" (id,group,code,name,val) values (4,"mail","pwd","SMTP User Password","");
+	INSERT INTO "sys_param" (id,group,code,name,val) values (5,"mail","addr","Mail Address","");
+
+	INSERT INTO "sys_param" (id,group,code,name,val) values (6,"profile","mail_template","Alarm Mail Template","");
+	INSERT INTO "sys_param" (id,group,code,name,val) values (7,"profile","mail_receiver","Alarm Mail Receiver","");
 		`
 
 /**

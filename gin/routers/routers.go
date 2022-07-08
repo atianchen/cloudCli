@@ -30,7 +30,7 @@ func Init() *gin.Engine {
 	getwd, _ := os.Getwd()
 	r.LoadHTMLGlob(getwd + "/gin/views/*.html")
 	r.Use(Cors(), log.GinLogger(), log.GinRecovery(true))
-	staticPack := packr.New("cloudCli", "./gin/views/static")
+	staticPack := packr.New("cloudCli", getwd+"/gin/static")
 	r.StaticFS("/static", staticPack) // http.Dir(getwd+"/gin/views/static"))
 	group := r.Group("/cloud")
 
@@ -52,40 +52,3 @@ func Cors() gin.HandlerFunc {
 		},
 	)
 }
-
-/**
- * 如果用到JWT，可以开启
- */
-//func JWTAuthMiddleware(c *gin.Context) {
-//	if c.Request.RequestURI == "/api/login/account" {
-//		c.Next()
-//		return
-//	}
-//	// 从请求头中取出
-//	signToken := c.Request.Header.Get("x-access-token")
-//	if signToken == "" {
-//		c.JSON(http.StatusOK, gin.H{
-//			"code":    1002,
-//			"data":    "",
-//			"message": "token为空",
-//		})
-//		c.Abort()
-//		return
-//	}
-//	// 校验token
-//	myclaims, err := common.ParserToken(signToken)
-//	if err != nil {
-//		log.Error(err.Error())
-//		c.JSON(http.StatusOK, gin.H{
-//			"code":    1003,
-//			"data":    err.Error(),
-//			"message": "token校验失败",
-//		})
-//		c.Abort()
-//		return
-//	}
-//	// 将用户的id放在到请求的上下文c上
-//	c.Set("id", myclaims.Id)
-//	c.Next() // 后续的处理函数可以用过c.Get("userid")来获取当前请求的id
-//
-//}
