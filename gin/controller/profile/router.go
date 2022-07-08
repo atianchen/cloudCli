@@ -3,7 +3,7 @@ package profile
 import "github.com/gin-gonic/gin"
 
 /**
- *
+ * 文件检测的路由
  * @author jensen.chen
  * @date 2022/7/8
  */

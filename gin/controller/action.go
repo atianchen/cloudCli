@@ -8,6 +8,6 @@ import "github.com/gin-gonic/gin"
  * @date 2022/7/7
  */
 type WebAction interface {
-	InitAction()
-	AddRouter(g *gin.RouterGroup)
+	InitAction()                  //初始化
+	AddRouter(g *gin.RouterGroup) //添加路由
 }

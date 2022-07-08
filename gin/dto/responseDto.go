@@ -11,9 +11,9 @@ const (
 )
 
 type ResponseMsg struct {
-	Code  int
-	Error string
-	Data  interface{}
+	Code  int         `json:"code"`
+	Error string      `json:"error"`
+	Data  interface{} `json:"data"`
 }
 
 func BuildSuccessMsg(data interface{}) *ResponseMsg {
@@ -29,8 +29,8 @@ func BuildErrorMsg(error string) *ResponseMsg {
 }
 
 type PageResponse struct {
-	Page       int
-	Limit      int
-	TotalCount int
-	Items      any
+	Page       int `json:"page"`
+	Limit      int `json:"limit"`
+	TotalCount int `json:"totalCount"`
+	Items      any `json:"items"`
 }

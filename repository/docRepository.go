@@ -85,11 +85,11 @@ func (r *DocRepository) Query(dest *[]domain.DocInfo, sql string, args ...any) e
 func (r *DocRepository) PageQuery(dest *[]domain.DocInfo, startIndex int, limit int, name string) error {
 	sql := "select * from inspect_doc"
 	if len(name) > 0 {
-		sql += " where name=?"
+		sql += " where name like ?"
 	}
 	sql += " limit ? offset  ?"
 	if len(name) > 0 {
-		return db.DbInst.Query(dest, sql, name, limit, startIndex)
+		return db.DbInst.Query(dest, sql, "%"+name+"%", limit, startIndex)
 	} else {
 		return db.DbInst.Query(dest, sql, limit, startIndex)
 	}

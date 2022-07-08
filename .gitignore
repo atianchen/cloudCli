@@ -16,3 +16,4 @@
 logs/
 db/
 data/
+*.db

@@ -25,6 +25,7 @@ func (lc *DocController) Init() {
  * 列出所有文件
  */
 func (lc *DocController) ListDoc(c *gin.Context) {
+
 	var param dto.PageRequestDto
 	c.BindJSON(&param)
 	var docs []domain.DocInfo
