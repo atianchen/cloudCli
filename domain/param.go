@@ -40,5 +40,5 @@ type Param struct {
 	Name  string
 	Code  string
 	Val   string
-	Group string //分组
+	Group string `db:"param_group"` //分组
 }

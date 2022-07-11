@@ -4,13 +4,13 @@ import (
 	"cloudCli/domain"
 	"cloudCli/gin/dto"
 	"cloudCli/repository"
-	beanutils "github.com/atianchen/go-beanutils"
+	"cloudCli/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 /**
- *
+ * 文档增删改查
  * @author jensen.chen
  * @date 2022/7/8
  */
@@ -29,16 +29,16 @@ func (lc *DocController) ListDoc(c *gin.Context) {
 
 	var param dto.PageRequestDto
 	c.BindJSON(&param)
-	var docs []*domain.DocInfo
+	var docs []domain.DocInfo
 	err := lc.repository.PageQuery(&docs, param.Page*param.Limit, param.Limit, param.Keyword)
 	if err != nil {
 		c.JSON(http.StatusOK, dto.BuildErrorMsg(err.Error()))
 	} else {
-		var items []*DocDto
+		var items []DocListDto
 		for _, doc := range docs {
-			docDto := DocDto{}
-			beanutils.CopyProperties(&docDto, doc)
-			items = append(items, &docDto)
+			docDto := DocListDto{}
+			utils.CopyProperties(&docDto, doc)
+			items = append(items, docDto)
 		}
 		c.JSON(http.StatusOK, dto.BuildSuccessMsg(dto.PageResponse{Page: param.Page, Limit: param.Limit, Items: &items}))
 	}
@@ -53,7 +53,7 @@ func (lc *DocController) DocDetail(c *gin.Context) {
 		doc, err := lc.repository.GetByPrimary(docId)
 		if err == nil {
 			docDto := DocDto{}
-			beanutils.CopyProperties(&docDto, doc)
+			utils.CopyProperties(&docDto, doc)
 			c.JSON(http.StatusOK, dto.BuildSuccessMsg(&docDto))
 		} else {
 			c.JSON(http.StatusOK, dto.BuildErrorMsg(err.Error()))

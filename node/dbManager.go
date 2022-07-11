@@ -59,15 +59,24 @@ const tableCreateSql string = `
 			    "creator"  VARCHAR(255) NULL,
    				PRIMARY KEY('id')
 			);
-	INSERT INTO "sys_user" (id,code,name,pwd,status,role_id ,ts,creator) values (1,"admin","admin","21232f297a57a5a743894a0e4a801fc3",1,"1",0,"sys");
-	INSERT INTO "sys_param" (id,group,code,name,val) values (1,"mail","host","SMTP Server Address","");
-	INSERT INTO "sys_param" (id,group,code,name,val) values (2,"mail","port","SMTP Server Port","");
-	INSERT INTO "sys_param" (id,group,code,name,val) values (3,"mail","user","SMTP User Name","");
-	INSERT INTO "sys_param" (id,group,code,name,val) values (4,"mail","pwd","SMTP User Password","");
-	INSERT INTO "sys_param" (id,group,code,name,val) values (5,"mail","addr","Mail Address","");
+	CREATE TABLE IF NOT EXISTS  "sys_param" (
+			    "id"  VARCHAR(100) NOT NULL,
+			    "code" VARCHAR(255) NULL,
+			    "name" VARCHAR(255) NULL,
+				"val" VARCHAR(255) NULL,
+				"param_group" INTEGER NULL,
+   				PRIMARY KEY('id')
+			);
+	INSERT OR IGNORE INTO "sys_user" (id,code,name,pwd,status,role_id ,ts,creator) values (1,"admin","admin","21232f297a57a5a743894a0e4a801fc3",1,"1",0,"sys");
 
-	INSERT INTO "sys_param" (id,group,code,name,val) values (6,"profile","mail_template","Alarm Mail Template","");
-	INSERT INTO "sys_param" (id,group,code,name,val) values (7,"profile","mail_receiver","Alarm Mail Receiver","");
+	INSERT OR IGNORE INTO "sys_param" (id,param_group,code,name,val) values (1,"mail","host","SMTP Server Address","");
+	INSERT OR IGNORE INTO "sys_param" (id,param_group,code,name,val) values (2,"mail","port","SMTP Server Port","");
+	INSERT OR IGNORE INTO "sys_param" (id,param_group,code,name,val) values (3,"mail","user","SMTP User Name","");
+	INSERT OR IGNORE INTO "sys_param" (id,param_group,code,name,val) values (4,"mail","pwd","SMTP User Password","");
+	INSERT OR IGNORE INTO "sys_param" (id,param_group,code,name,val) values (5,"mail","addr","Mail Address","");
+
+	INSERT OR IGNORE INTO "sys_param" (id,param_group,code,name,val) values (6,"profile","mail_template","Alarm Mail Template","");
+	INSERT OR IGNORE INTO "sys_param" (id,param_group,code,name,val) values (7,"profile","mail_receiver","Alarm Mail Receiver","");
 		`
 
 /**

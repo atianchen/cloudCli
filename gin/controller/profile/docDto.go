@@ -16,3 +16,17 @@ type DocDto struct {
 	CreateTime int64  `json:"createTime"`
 	CheckTime  int64  `json:"checkTime"`
 }
+
+/**
+用于列表展示的文档DTO
+*/
+type DocListDto struct {
+	Id         string `json:"id"`
+	Name       string `json:"name"`
+	Path       string `json:"path"`
+	NestedPath string `json:"nestedPath"`
+	Type       int8   `json:"type"`
+	Hash       string `json:"hash"`
+	CreateTime int64  `json:"createTime"`
+	CheckTime  int64  `json:"checkTime"`
+}

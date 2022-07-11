@@ -82,7 +82,7 @@ func (r *DocRepository) Query(dest *[]domain.DocInfo, sql string, args ...any) e
 /**
  * 分页查询
  */
-func (r *DocRepository) PageQuery(dest *[]*domain.DocInfo, startIndex int, limit int, name string) error {
+func (r *DocRepository) PageQuery(dest *[]domain.DocInfo, startIndex int, limit int, name string) error {
 	sql := "select * from inspect_doc"
 	if len(name) > 0 {
 		sql += " where name like ?"
