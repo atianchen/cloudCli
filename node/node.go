@@ -47,6 +47,7 @@ type Node interface {
 }
 
 type AbstractNode struct {
+	Transpot chan interface{}
 }
 
 func (t *AbstractNode) Name() string {
@@ -57,6 +58,7 @@ func (t *AbstractNode) Name() string {
 消息接收
 */
 func (t *AbstractNode) MessageReceive(target Node, channel chan interface{}) {
+	t.Transpot = channel
 L:
 	for {
 		select {

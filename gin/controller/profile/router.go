@@ -22,6 +22,7 @@ func (s ProfileAction) AddRouter(g *gin.RouterGroup) {
 		profileGroup.POST("/doc/list", s.docAction.ListDoc)
 		profileGroup.POST("/doc/detail", s.docAction.DocDetail)
 		profileGroup.POST("/doc/delete", s.docAction.DeleteDoc)
+		profileGroup.POST("/doc/reset", s.docAction.Reset)
 	}
 
 }

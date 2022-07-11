@@ -26,9 +26,14 @@ func CreateChan(name string) chan interface{} {
 /**
 获取通道
 */
-func GetChan(name string) chan interface{} {
-	rs, _ := chanRepository[name]
-	return rs
+func GetChan(name string) (chan interface{}, bool) {
+	rs, ok := chanRepository[name]
+	if ok {
+		return rs, true
+	} else {
+		return nil, false
+	}
+
 }
 
 /**

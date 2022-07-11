@@ -1,12 +1,15 @@
 package profile
 
 import (
+	"cloudCli/channel"
 	"cloudCli/domain"
 	"cloudCli/gin/dto"
+	"cloudCli/node/profile"
 	"cloudCli/repository"
 	"cloudCli/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 /**
@@ -76,5 +79,28 @@ func (lc *DocController) DeleteDoc(c *gin.Context) {
 		}
 	} else {
 		c.JSON(http.StatusOK, dto.BuildErrorMsg("Miss Param"))
+	}
+}
+
+func (lc *DocController) Reset(c *gin.Context) {
+	nodeChan, _ := channel.GetChan(profile.PROFILE_NODE_NAME)
+	if nodeChan != nil {
+		nodeChan <- profile.BuildRestCommand()
+		select {
+		case res := <-nodeChan:
+			{
+				response := res.(*channel.AsyncResponse)
+				if response.Err == nil {
+					c.JSON(http.StatusOK, dto.BuildEmptySuccessMsg())
+				} else {
+					c.JSON(http.StatusOK, dto.BuildErrorMsg(response.Err.Error()))
+				}
+
+			}
+		case <-time.After(20 * time.Second): //10秒没执行，则直接报超时
+			c.JSON(http.StatusOK, dto.BuildErrorMsg("Execution timeout"))
+		}
+	} else {
+		c.JSON(http.StatusOK, dto.BuildErrorMsg("Node communication failed"))
 	}
 }

@@ -49,6 +49,14 @@ func (r *DocRepository) Remove(doc *domain.DocInfo) error {
 }
 
 /**
+ * 删除全部
+ */
+func (r *DocRepository) RemoveAll() error {
+	_, err := db.DbInst.Execute("delete from inspect_doc")
+	return err
+}
+
+/**
  * 根据主键删除
  */
 func (r *DocRepository) RemoveByPrimary(priKey string) error {

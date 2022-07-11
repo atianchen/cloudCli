@@ -72,6 +72,7 @@ func (pc *ParamController) UpdateParam(c *gin.Context) {
 		param, err := pc.repository.GetByPrimary(arg.Id)
 		param.Val = arg.Val
 		if err == nil {
+
 			err = pc.repository.Update(param)
 		}
 		if err == nil {

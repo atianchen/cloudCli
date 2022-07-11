@@ -2,6 +2,7 @@ package profile
 
 import (
 	"cloudCli/cfg"
+	channel2 "cloudCli/channel"
 	"cloudCli/domain"
 	"cloudCli/io"
 	"cloudCli/node"
@@ -15,6 +16,8 @@ import (
 	"os"
 	"time"
 )
+
+const PROFILE_NODE_NAME = "profileInspect"
 
 /**
  * 配置文件巡检
@@ -67,6 +70,13 @@ func (p *ProfileInspect) Start(context *node.NodeContext) {
 	*/
 	p.docRepository = &repository.DocRepository{}
 	p.docHisRepository = &repository.DocHisRepository{}
+	p.FirstFileScan()
+}
+
+/**
+第一次文件扫描
+*/
+func (p *ProfileInspect) FirstFileScan() {
 	for _, config := range p.configs {
 		files, err := io.FindFile(config.Directory, config.Expression)
 		if err != nil {
@@ -129,18 +139,55 @@ func (p *ProfileInspect) GetMsgHandler() node.MsgHandler {
 处理Channel消息
 */
 func (p *ProfileInspect) HandleMessage(msg interface{}) {
-	var docs []domain.DocInfo
-	err := p.docRepository.GetAll(&docs)
+	if msg != nil {
+		switch msg.(type) {
+		case *channel2.CommandMessage:
+			{
+				switch msg.(*channel2.CommandMessage).Name {
+				case channel2.MESSAGE_ONTIME:
+					{
+						//按时巡检系统
+						var docs []domain.DocInfo
+						err := p.docRepository.GetAll(&docs)
 
-	if err == nil {
-		for _, doc := range docs {
-			if len(doc.Path) > 0 {
-				p.checkFile(&doc)
+						if err == nil {
+							for _, doc := range docs {
+								if len(doc.Path) > 0 {
+									p.checkFile(&doc)
+								}
+							}
+						} else {
+							log.Error("Inspect Exception ", err)
+						}
+					}
+				case MESSAGE_PROFILE_RESET:
+					{
+						/**
+						重置
+						*/
+						p.reset()
+					}
+				}
+
 			}
 		}
-	} else {
-		log.Error("Inspect Exception ", err)
+
 	}
+}
+
+/**
+重置所有配置
+*/
+func (p *ProfileInspect) reset() {
+	log.Info("Reset Profile Config")
+	err := p.docRepository.RemoveAll()
+	if err != nil {
+		p.Transpot <- channel2.BuildErrorResponse(err)
+	} else {
+		p.FirstFileScan()
+		p.Transpot <- channel2.BuildEmptyResponse()
+	}
+
 }
 
 /**
