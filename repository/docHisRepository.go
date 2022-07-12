@@ -71,6 +71,15 @@ func (r *DocHisRepository) GetByPrimary(priKey string) (*domain.DocHistory, erro
 }
 
 /**
+计算数量
+*/
+func (r *DocHisRepository) CountDocHis(path string, nestedPath string, status int) (int, error) {
+	var num int
+	err := db.DbInst.Get(&num, "select count(*) from inspect_doc_his where path=? and nested_path=? and status=?", path, nestedPath, status)
+	return num, err
+}
+
+/**
  * 执行查询
  */
 func (r *DocHisRepository) Query(dest []domain.DocHistory, sql string, args ...any) error {

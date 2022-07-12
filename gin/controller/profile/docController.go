@@ -6,7 +6,7 @@ import (
 	"cloudCli/gin/dto"
 	"cloudCli/node/profile"
 	"cloudCli/repository"
-	"cloudCli/utils"
+	go_beanutils "github.com/atianchen/go-beanutils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -40,7 +40,7 @@ func (lc *DocController) ListDoc(c *gin.Context) {
 		var items []DocListDto
 		for _, doc := range docs {
 			docDto := DocListDto{}
-			utils.CopyProperties(&docDto, doc)
+			go_beanutils.CopyProperties(&docDto, doc)
 			items = append(items, docDto)
 		}
 		c.JSON(http.StatusOK, dto.BuildSuccessMsg(dto.PageResponse{Page: param.Page, Limit: param.Limit, Items: &items}))
@@ -56,7 +56,7 @@ func (lc *DocController) DocDetail(c *gin.Context) {
 		doc, err := lc.repository.GetByPrimary(docId)
 		if err == nil {
 			docDto := DocDto{}
-			utils.CopyProperties(&docDto, doc)
+			go_beanutils.CopyProperties(&docDto, doc)
 			c.JSON(http.StatusOK, dto.BuildSuccessMsg(&docDto))
 		} else {
 			c.JSON(http.StatusOK, dto.BuildErrorMsg(err.Error()))
@@ -83,21 +83,21 @@ func (lc *DocController) DeleteDoc(c *gin.Context) {
 }
 
 func (lc *DocController) Reset(c *gin.Context) {
-	nodeChan, _ := channel.GetChan(profile.PROFILE_NODE_NAME)
+	nodeChan, _ := channel.GetChan(profile.PROFILE_NODE_NAME) //获取节点channel
 	if nodeChan != nil {
-		nodeChan <- profile.BuildRestCommand()
-		select {
+		nodeChan <- profile.BuildRestCommand() //发送消息
+		select {                               //等待节点回复
 		case res := <-nodeChan:
 			{
 				response := res.(*channel.AsyncResponse)
-				if response.Err == nil {
+				if response.Err == nil { //如果没有错误，则返回成功执行
 					c.JSON(http.StatusOK, dto.BuildEmptySuccessMsg())
-				} else {
+				} else { //返回错误信息
 					c.JSON(http.StatusOK, dto.BuildErrorMsg(response.Err.Error()))
 				}
 
 			}
-		case <-time.After(20 * time.Second): //10秒没执行，则直接报超时
+		case <-time.After(20 * time.Second): //20秒没收到回复，则返回超时错误
 			c.JSON(http.StatusOK, dto.BuildErrorMsg("Execution timeout"))
 		}
 	} else {

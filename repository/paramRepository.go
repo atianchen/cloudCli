@@ -63,6 +63,15 @@ func (r *ParamRepository) GetGroupParams(dest *[]domain.Param, group string) err
 }
 
 /**
+获取分组配置
+*/
+func (r *ParamRepository) GetGroupSpecParam(group string, name string) (*domain.Param, error) {
+	doc := domain.Param{}
+	err := db.DbInst.Get(&doc, "select * from sys_param where param_group=? and code=?", group, name)
+	return &doc, err
+}
+
+/**
 
  */
 func (r *ParamRepository) GetAll(dest *[]domain.Param) error {

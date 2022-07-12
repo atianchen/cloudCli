@@ -7,6 +7,7 @@ package channel
  */
 const MESSAGE_CLOSE = "close"
 const MESSAGE_ONTIME = "onTime"
+const MESSGE_RESPONSE = "response"
 
 type Message interface {
 }

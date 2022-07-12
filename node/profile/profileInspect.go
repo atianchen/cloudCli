@@ -140,11 +140,11 @@ func (p *ProfileInspect) GetMsgHandler() node.MsgHandler {
 */
 func (p *ProfileInspect) HandleMessage(msg interface{}) {
 	if msg != nil {
-		switch msg.(type) {
-		case *channel2.CommandMessage:
+		switch msg.(type) { //判断消息类型
+		case *channel2.CommandMessage: //如果是CommandMessage
 			{
-				switch msg.(*channel2.CommandMessage).Name {
-				case channel2.MESSAGE_ONTIME:
+				switch msg.(*channel2.CommandMessage).Name { //判断消息的指令
+				case channel2.MESSAGE_ONTIME: //如果是定时执行的指令，则执行定时任务
 					{
 						//按时巡检系统
 						var docs []domain.DocInfo
@@ -160,7 +160,7 @@ func (p *ProfileInspect) HandleMessage(msg interface{}) {
 							log.Error("Inspect Exception ", err)
 						}
 					}
-				case MESSAGE_PROFILE_RESET:
+				case MESSAGE_PROFILE_RESET: //如果是收到的重置命令
 					{
 						/**
 						重置
@@ -181,9 +181,10 @@ func (p *ProfileInspect) HandleMessage(msg interface{}) {
 func (p *ProfileInspect) reset() {
 	log.Info("Reset Profile Config")
 	err := p.docRepository.RemoveAll()
-	if err != nil {
+	if err != nil { //有错误，回送载有错误信息的AsyncResponse
 		p.Transpot <- channel2.BuildErrorResponse(err)
 	} else {
+		//执行成功，发送回表示执行成功的AsyncResponse
 		p.FirstFileScan()
 		p.Transpot <- channel2.BuildEmptyResponse()
 	}
@@ -208,11 +209,21 @@ func (p *ProfileInspect) checkFile(info *domain.DocInfo) {
 		HASH值变化，记录历史
 		*/
 		if doc.Hash != info.Hash {
-			log.Info("File Changed Detected ", doc.Path)
-			p.saveChangeHis(info, doc)
-		} else {
-			log.Info("consistency check PASS ", doc.Path)
+			/**
+			判断是否有未处理的预警信息
+			*/
+			if num, _ := p.docHisRepository.CountDocHis(doc.Path, doc.NestedPath, domain.DOCHIS_STATUS_PENDING); num < 1 {
+				log.Info("File Changed Detected ", doc.Path)
+				log.Info("Send Alarm Mail ", doc.Path)
+				if err := SendMailAlarm(p.saveChangeHis(info, doc)); err != nil {
+					log.Info("Mail Send Error ", err.Error())
+				} //发送警告邮件
+			} else {
+				log.Info("Skip Alarm ", doc.Path)
+			}
 
+		} else {
+			log.Info("Consistency Check PASS ", doc.Path)
 		}
 	}
 }
@@ -220,7 +231,7 @@ func (p *ProfileInspect) checkFile(info *domain.DocInfo) {
 /**
 记录文件变更历史
 */
-func (p *ProfileInspect) saveChangeHis(od *domain.DocInfo, nd *domain.DocInfo) {
+func (p *ProfileInspect) saveChangeHis(od *domain.DocInfo, nd *domain.DocInfo) *domain.DocHistory {
 
 	time := timeUtils.TimeConfig{time.Now()}
 
@@ -240,6 +251,7 @@ func (p *ProfileInspect) saveChangeHis(od *domain.DocInfo, nd *domain.DocInfo) {
 	} else {
 		log.Error("Save Change History ", od.Path)
 	}
+	return &docHis
 }
 
 /**

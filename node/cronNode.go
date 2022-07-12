@@ -67,7 +67,7 @@ func onTimeExecute(node string) {
 		}
 	}()
 	log.Info("OnTime ", node)
-	nc := channel.GetChan(node)
+	nc, _ := channel.GetChan(node)
 	if nc != nil {
 		nc <- channel.BulidOnTimeMessage(nil)
 	}

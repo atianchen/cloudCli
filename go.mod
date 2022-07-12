@@ -21,7 +21,7 @@ require (
 
 require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1656 // indirect
-	github.com/atianchen/go-beanutils v0.0.0-20220708082901-c3f9ed744ccf // indirect
+	github.com/atianchen/go-beanutils v0.0.2 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect

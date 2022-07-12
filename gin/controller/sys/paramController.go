@@ -4,7 +4,7 @@ import (
 	"cloudCli/domain"
 	"cloudCli/gin/dto"
 	"cloudCli/repository"
-	"cloudCli/utils"
+	go_beanutils "github.com/atianchen/go-beanutils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -35,7 +35,7 @@ func (pc *ParamController) ListParam(c *gin.Context) {
 		var items []ParamDto
 		for _, param := range params {
 			paramDto := ParamDto{}
-			utils.CopyProperties(&paramDto, param)
+			go_beanutils.CopyProperties(&paramDto, param)
 			items = append(items, paramDto)
 		}
 		c.JSON(http.StatusOK, dto.BuildSuccessMsg(params))
@@ -51,7 +51,7 @@ func (pc *ParamController) ParamInfo(c *gin.Context) {
 		param, err := pc.repository.GetByPrimary(paramId)
 		if err == nil {
 			paramDto := ParamDto{}
-			utils.CopyProperties(&paramDto, param)
+			go_beanutils.CopyProperties(&paramDto, param)
 			c.JSON(http.StatusOK, dto.BuildSuccessMsg(&paramDto))
 		} else {
 			c.JSON(http.StatusOK, dto.BuildErrorMsg(err.Error()))
