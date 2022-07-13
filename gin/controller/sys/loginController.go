@@ -5,6 +5,7 @@ import (
 	"cloudCli/gin/security"
 	"cloudCli/repository"
 	"cloudCli/utils/encrypt"
+	go_beanutils "github.com/atianchen/go-beanutils"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"net/http"
@@ -18,6 +19,26 @@ type LoginController struct {
 func (lc *LoginController) Init() {
 
 	lc.repository = &repository.SysUserRepository{}
+}
+
+func (lc *LoginController) CurrentUser(c *gin.Context) {
+	auth, err := c.Cookie("cloudst")
+	if err != nil {
+		c.JSON(http.StatusOK, dto.BuildErrorMsg("Not Login"))
+		return
+	}
+	var realm security.Realm
+	if err = encrypt.ParseToken(auth, &realm); err == nil {
+		if u, err := lc.repository.GetByPrimary(realm.Id); err == nil {
+			var userDto UserDto
+			go_beanutils.CopyProperties(&userDto, u)
+			c.JSON(http.StatusOK, dto.BuildSuccessMsg(&userDto))
+		} else {
+			c.JSON(http.StatusOK, dto.BuildErrorMsg("Not Login"))
+		}
+	} else {
+		c.JSON(http.StatusOK, dto.BuildErrorMsg("Not Login"))
+	}
 }
 
 /**
@@ -42,7 +63,10 @@ func (lc *LoginController) Login(c *gin.Context) {
 				},
 			}
 			token, _ := encrypt.GenerateToken(claims)
-			c.JSON(http.StatusOK, dto.BuildSuccessMsg(token))
+			c.SetCookie("cloudst", token, 3600, "/", "/cloudCli", true, true)
+			var userDto UserDto
+			go_beanutils.CopyProperties(&userDto, user)
+			c.JSON(http.StatusOK, dto.BuildSuccessMsg(&userDto))
 		} else {
 			c.JSON(http.StatusOK, dto.BuildEmptySuccessMsg())
 		}

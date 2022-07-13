@@ -25,6 +25,7 @@ func (s SysAction) AddRouter(g *gin.RouterGroup) {
 	sysGroup := g.Group("/sys")
 	{
 		sysGroup.POST("/login", s.loginAction.Login)
+		sysGroup.POST("/currentUser", s.loginAction.CurrentUser)
 	}
 	paramGroup := g.Group("/sys/param")
 	{

@@ -18,6 +18,9 @@ var userRepository = repository.SysUserRepository{}
 func JwtAuthInterceptor() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		auth := context.Request.Header.Get("x-access-token")
+		if len(auth) < 1 {
+			auth, _ = context.Cookie("cloudst")
+		}
 		var realm Realm
 		err := encrypt.ParseToken(auth, &realm)
 		if err != nil {
