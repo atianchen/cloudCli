@@ -66,6 +66,7 @@ func (lc *LoginController) Login(c *gin.Context) {
 			c.SetCookie("cloudst", token, 3600, "/", "/cloudCli", true, true)
 			var userDto UserDto
 			go_beanutils.CopyProperties(&userDto, user)
+			userDto.Token = token
 			c.JSON(http.StatusOK, dto.BuildSuccessMsg(&userDto))
 		} else {
 			c.JSON(http.StatusOK, dto.BuildEmptySuccessMsg())

@@ -36,6 +36,11 @@ func (r *DocRepository) Update(doc *domain.DocInfo) error {
 	return err
 }
 
+func (r *DocRepository) UpdateContent(docId string, hash string, content string) error {
+	_, err := db.DbInst.Execute("update inspect_doc set hash=?,content=? where id=?", hash, content, docId)
+	return err
+}
+
 func (r *DocRepository) UpdateCheckTime(doc *domain.DocInfo) error {
 	_, err := db.DbInst.Execute("update inspect_doc set check_time=? where id=?", doc.CheckTime, doc.Id)
 	return err

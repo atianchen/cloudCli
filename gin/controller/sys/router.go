@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"cloudCli/gin/security"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,6 +14,7 @@ type SysAction struct {
 	loginAction  LoginController
 	logoutAction LogoutController
 	paramAction  ParamController
+	configAction ConfigController
 }
 
 func (s SysAction) InitAction() {
@@ -33,9 +35,13 @@ func (s SysAction) AddRouter(g *gin.RouterGroup) {
 	}
 	paramGroup := g.Group("/sys/param")
 	{
-		paramGroup.POST("/list", s.paramAction.ListParam)
-		paramGroup.POST("/detail", s.paramAction.ParamInfo)
-		paramGroup.POST("/update", s.paramAction.UpdateParam)
+		paramGroup.POST("/list", security.JwtAuthInterceptor(), s.paramAction.ListParam)
+		paramGroup.POST("/detail", security.JwtAuthInterceptor(), s.paramAction.ParamInfo)
+		paramGroup.POST("/update", security.JwtAuthInterceptor(), s.paramAction.UpdateParam)
+	}
+	configGroup := g.Group("/sys/config")
+	{
+		configGroup.POST("/list", security.JwtAuthInterceptor(), s.configAction.GetConfig)
 	}
 
 }

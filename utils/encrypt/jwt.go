@@ -23,7 +23,7 @@ func ParseToken(signToken string, claims jwt.Claims) error {
 	token, err := jwt.ParseWithClaims(signToken, claims, func(token *jwt.Token) (interface{}, error) {
 		return mySigningKey, nil
 	})
-	if token.Valid {
+	if token != nil && token.Valid {
 		return nil
 	} else {
 		return err

@@ -5,6 +5,7 @@ import (
 	"cloudCli/node"
 	"cloudCli/node/core"
 	"cloudCli/utils/log"
+	_ "net/http/pprof"
 	"os"
 	"os/signal"
 	"syscall"
@@ -18,10 +19,11 @@ func main() {
 / /___/ / /_/ / /_/ / /_/ /  / /___/ / /  
 \____/_/\____/\__,_/\__,_/   \____/_/_/  
 
-       YonyouHK  @2022 V0.01 
-  https://github.com/atianchen/cloudCli
-                                         
+       YonyouHK  @2022 V0.01                                    
 		  `
+	/*	go func() {
+		sysLog.Println(http.ListenAndServe(":6060", nil))
+	}()*/
 	pwd, _ := os.Getwd()
 	cfg.Load(pwd + "/config.yml")
 	var logger log.LogInit = &log.Log{}

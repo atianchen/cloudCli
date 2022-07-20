@@ -28,7 +28,7 @@ func Init() *gin.Engine {
 	}
 	r := gin.Default()
 	getwd, _ := os.Getwd()
-	r.LoadHTMLGlob(getwd + "/gin/views/*.html")
+	//r.LoadHTMLGlob(getwd + "/gin/views/*.html")
 	r.Use(Cors(), log.GinLogger(), log.GinRecovery(true))
 	staticPack := packr.New("cloudCli", getwd+"/gin/static")
 	r.StaticFS("/static", staticPack) // http.Dir(getwd+"/gin/views/static"))

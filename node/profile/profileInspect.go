@@ -212,10 +212,24 @@ func (p *ProfileInspect) checkFile(info *domain.DocInfo) {
 			/**
 			判断是否有未处理的预警信息
 			*/
-			if num, _ := p.docHisRepository.CountDocHis(doc.Path, doc.NestedPath, domain.DOCHIS_STATUS_PENDING); num < 1 {
+			lastHis, _ := p.docHisRepository.GetLastDocHis(doc.Path, doc.NestedPath, domain.DOCHIS_STATUS_PENDING)
+			/**
+			如果没有处理过的预警信息 或则上次预警信息的HASH与先HASH值扔不相同，则生成新的
+			*/
+			if lastHis == nil || lastHis.Hash != doc.Hash {
 				log.Info("File Changed Detected ", doc.Path)
 				log.Info("Send Alarm Mail ", doc.Path)
-				if err := SendMailAlarm(p.saveChangeHis(info, doc)); err != nil {
+				if lastHis != nil {
+					/**
+					变更修改时间和HASH值
+					*/
+					lastHis.ModifyTime = time.Unix()
+					lastHis.Hash = doc.Hash
+					p.docHisRepository.Update(lastHis)
+				} else {
+					lastHis = p.saveChangeHis(info, doc)
+				}
+				if err := SendMailAlarm(lastHis); err != nil {
 					log.Info("Mail Send Error ", err.Error())
 				} //发送警告邮件
 			} else {
@@ -241,6 +255,7 @@ func (p *ProfileInspect) saveChangeHis(od *domain.DocInfo, nd *domain.DocInfo) *
 		NestedPath: od.NestedPath,
 		Name:       od.Name,
 		ModifyTime: time.Unix(),
+		Hash:       nd.Hash,
 		Raw:        od.Content,
 		Content:    nd.Content,
 		Status:     domain.DOCHIS_STATUS_PENDING,

@@ -10,4 +10,5 @@ type UserDto struct {
 	Name   string `json:"name"`
 	Code   string `json:"code"`
 	RoleId string `json:"roleId"`
+	Token  string `json:"token"`
 }

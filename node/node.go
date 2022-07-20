@@ -3,6 +3,7 @@ package node
 import (
 	channel2 "cloudCli/channel"
 	"reflect"
+	"time"
 )
 
 /**
@@ -86,5 +87,6 @@ L:
 		default:
 
 		}
+		time.Sleep(5 * time.Second)
 	}
 }

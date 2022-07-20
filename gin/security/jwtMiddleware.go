@@ -28,8 +28,9 @@ func JwtAuthInterceptor() gin.HandlerFunc {
 			context.Status(http.StatusForbidden)
 		} else {
 			user, err := userRepository.GetByPrimary(realm.Id)
-			if err == nil {
+			if err != nil {
 				context.Abort()
+				context.Status(http.StatusForbidden)
 			} else {
 				context.Set(webConst.KEY_LOGINUSER, user)
 			}
