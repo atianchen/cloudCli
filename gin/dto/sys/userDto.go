@@ -12,3 +12,10 @@ type UserDto struct {
 	RoleId string `json:"roleId"`
 	Token  string `json:"token"`
 }
+
+/**
+密码变更
+*/
+type UpdatePwdDto struct {
+	Pwd string `json:"pwd"`
+}

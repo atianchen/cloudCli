@@ -44,6 +44,15 @@ func (r *SysUserRepository) Update(u *domain.SysUser) error {
 }
 
 /**
+ * 更新密码
+ */
+func (r *SysUserRepository) UpdatePwd(id string, pwd string) error {
+	_, err := db.DbInst.Execute("update sys_user set pwd=? where id=?",
+		pwd, id)
+	return err
+}
+
+/**
  * 删除
  */
 func (r *SysUserRepository) Remove(u *domain.SysUser) error {

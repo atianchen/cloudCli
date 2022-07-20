@@ -2,6 +2,7 @@ package sys
 
 import (
 	"cloudCli/gin/dto"
+	"cloudCli/gin/dto/sys"
 	"cloudCli/gin/security"
 	"cloudCli/repository"
 	"cloudCli/utils/encrypt"
@@ -30,7 +31,7 @@ func (lc *LoginController) CurrentUser(c *gin.Context) {
 	var realm security.Realm
 	if err = encrypt.ParseToken(auth, &realm); err == nil {
 		if u, err := lc.repository.GetByPrimary(realm.Id); err == nil {
-			var userDto UserDto
+			var userDto sys.UserDto
 			go_beanutils.CopyProperties(&userDto, u)
 			c.JSON(http.StatusOK, dto.BuildSuccessMsg(&userDto))
 		} else {
@@ -47,7 +48,7 @@ func (lc *LoginController) CurrentUser(c *gin.Context) {
  * @date 2022/7/7
  */
 func (lc *LoginController) Login(c *gin.Context) {
-	var param LoginDto
+	var param sys.LoginDto
 	c.BindJSON(&param)
 	user, err := lc.repository.FindByCode(param.Name)
 	if err != nil {
@@ -64,7 +65,7 @@ func (lc *LoginController) Login(c *gin.Context) {
 			}
 			token, _ := encrypt.GenerateToken(claims)
 			c.SetCookie("cloudst", token, 3600, "/", "/cloudCli", true, true)
-			var userDto UserDto
+			var userDto sys.UserDto
 			go_beanutils.CopyProperties(&userDto, user)
 			userDto.Token = token
 			c.JSON(http.StatusOK, dto.BuildSuccessMsg(&userDto))

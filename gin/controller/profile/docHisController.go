@@ -3,6 +3,7 @@ package profile
 import (
 	"cloudCli/domain"
 	"cloudCli/gin/dto"
+	"cloudCli/gin/dto/profile"
 	"cloudCli/repository"
 	"cloudCli/utils/timeUtils"
 	go_beanutils "github.com/atianchen/go-beanutils"
@@ -37,9 +38,9 @@ func (lc *DocHisController) ListDocHis(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, dto.BuildErrorMsg(err.Error()))
 	} else {
-		var items []DocHisDto
+		var items []profile.DocHisDto
 		for _, doc := range docs {
-			docDto := DocHisDto{}
+			docDto := profile.DocHisDto{}
 			go_beanutils.CopyProperties(&docDto, doc)
 			items = append(items, docDto)
 		}
@@ -55,7 +56,7 @@ func (lc *DocHisController) DocHisDetail(c *gin.Context) {
 	if len(hisId) > 0 {
 		his, err := lc.repository.GetByPrimary(hisId)
 		if err == nil {
-			docHisDto := DocHisDetailDto{}
+			docHisDto := profile.DocHisDetailDto{}
 			go_beanutils.CopyProperties(&docHisDto, his)
 			c.JSON(http.StatusOK, dto.BuildSuccessMsg(&docHisDto))
 		} else {

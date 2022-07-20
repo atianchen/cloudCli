@@ -4,6 +4,7 @@ import (
 	"cloudCli/channel"
 	"cloudCli/domain"
 	"cloudCli/gin/dto"
+	profile2 "cloudCli/gin/dto/profile"
 	"cloudCli/node/profile"
 	"cloudCli/repository"
 	go_beanutils "github.com/atianchen/go-beanutils"
@@ -37,9 +38,9 @@ func (lc *DocController) ListDoc(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, dto.BuildErrorMsg(err.Error()))
 	} else {
-		var items []DocListDto
+		var items []profile2.DocListDto
 		for _, doc := range docs {
-			docDto := DocListDto{}
+			docDto := profile2.DocListDto{}
 			go_beanutils.CopyProperties(&docDto, doc)
 			items = append(items, docDto)
 		}
@@ -55,7 +56,7 @@ func (lc *DocController) DocDetail(c *gin.Context) {
 	if len(docId) > 0 {
 		doc, err := lc.repository.GetByPrimary(docId)
 		if err == nil {
-			docDto := DocDto{}
+			docDto := profile2.DocDto{}
 			go_beanutils.CopyProperties(&docDto, doc)
 			c.JSON(http.StatusOK, dto.BuildSuccessMsg(&docDto))
 		} else {

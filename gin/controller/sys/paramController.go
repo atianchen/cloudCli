@@ -3,6 +3,7 @@ package sys
 import (
 	"cloudCli/domain"
 	"cloudCli/gin/dto"
+	"cloudCli/gin/dto/sys"
 	"cloudCli/repository"
 	go_beanutils "github.com/atianchen/go-beanutils"
 	"github.com/gin-gonic/gin"
@@ -32,9 +33,9 @@ func (pc *ParamController) ListParam(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, dto.BuildErrorMsg(err.Error()))
 	} else {
-		var items []ParamDto
+		var items []sys.ParamDto
 		for _, param := range params {
-			paramDto := ParamDto{}
+			paramDto := sys.ParamDto{}
 			go_beanutils.CopyProperties(&paramDto, param)
 			items = append(items, paramDto)
 		}
@@ -50,7 +51,7 @@ func (pc *ParamController) ParamInfo(c *gin.Context) {
 	if len(paramId) > 0 {
 		param, err := pc.repository.GetByPrimary(paramId)
 		if err == nil {
-			paramDto := ParamDto{}
+			paramDto := sys.ParamDto{}
 			go_beanutils.CopyProperties(&paramDto, param)
 			c.JSON(http.StatusOK, dto.BuildSuccessMsg(&paramDto))
 		} else {
@@ -65,7 +66,7 @@ func (pc *ParamController) ParamInfo(c *gin.Context) {
 更新参数的值
 */
 func (pc *ParamController) UpdateParam(c *gin.Context) {
-	var arg ParamDto
+	var arg sys.ParamDto
 	c.BindJSON(&arg)
 	if len(arg.Id) > 0 {
 		var err error

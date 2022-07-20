@@ -11,10 +11,11 @@ import (
  * @date 2022/7/7
  */
 type SysAction struct {
-	loginAction  LoginController
-	logoutAction LogoutController
-	paramAction  ParamController
-	configAction ConfigController
+	loginAction     LoginController
+	logoutAction    LogoutController
+	paramAction     ParamController
+	configAction    ConfigController
+	adminController AdminController
 }
 
 func (s SysAction) InitAction() {
@@ -24,6 +25,8 @@ func (s SysAction) InitAction() {
 	s.paramAction.Init()
 	s.logoutAction = LogoutController{}
 	s.logoutAction.Init()
+	s.adminController = AdminController{}
+	s.adminController.Init()
 }
 func (s SysAction) AddRouter(g *gin.RouterGroup) {
 
@@ -32,6 +35,7 @@ func (s SysAction) AddRouter(g *gin.RouterGroup) {
 		sysGroup.POST("/login", s.loginAction.Login)
 		sysGroup.GET("/logout", s.logoutAction.Logout)
 		sysGroup.POST("/currentUser", s.loginAction.CurrentUser)
+		sysGroup.POST("/updateAdminPwd", security.JwtAuthInterceptor(), s.adminController.UpdateAdminPwd)
 	}
 	paramGroup := g.Group("/sys/param")
 	{
