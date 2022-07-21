@@ -15,6 +15,10 @@ var (
 	mill    = "15:04:05"
 )
 
+func NowUnixTime() int64 {
+	return time.Now().Unix()
+}
+
 /**
  * 输出年月日
  */

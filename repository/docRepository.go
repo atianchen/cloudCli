@@ -5,8 +5,6 @@ import (
 	"cloudCli/domain"
 	"cloudCli/utils/timeUtils"
 	"github.com/google/uuid"
-	"log"
-	"time"
 )
 
 /**
@@ -18,11 +16,10 @@ type DocRepository struct {
 }
 
 func (r *DocRepository) Save(doc *domain.DocInfo) error {
-	time := timeUtils.TimeConfig{time.Now()}
-	doc.Ts = time.Unix()
+
+	doc.Ts = timeUtils.NowUnixTime()
 	_, err := db.DbInst.Execute("insert into inspect_doc (id,name,content,path,nested_path,creator,create_time,modify_time,check_time,hash,type,ts) values (?,?,?,?,?,?,?,?,?,?,?,?)",
 		uuid.New(), doc.Name, doc.Content, doc.Path, doc.NestedPath, doc.Creator, doc.CreateTime, doc.ModifyTime, doc.CheckTime, doc.Hash, doc.Type, doc.Ts)
-	log.Println(err)
 	return err
 
 }

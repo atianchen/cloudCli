@@ -69,6 +69,13 @@ const tableCreateSql string = `
 				"param_group" INTEGER NULL,
    				PRIMARY KEY('id')
 			);
+	CREATE TABLE IF NOT EXISTS  "notify_history" (
+			    "id"  VARCHAR(100) NOT NULL,
+				"receiver" VARCHAR(500) NULL,
+				"content" VARCHAR(1000) NULL,
+				"send_time" INTEGER NULL,
+   				PRIMARY KEY('id')
+			);
 	INSERT OR IGNORE INTO "sys_user" (id,code,name,pwd,status,role_id ,ts,creator) values (1,"admin","admin","21232f297a57a5a743894a0e4a801fc3",1,"1",0,"sys");
 
 	INSERT OR IGNORE INTO "sys_param" (id,param_group,code,name,val) values (1,"mail","host","SMTP Server Address","smtp.qq.com");
@@ -97,11 +104,11 @@ func (d *DbManager) GetMsgHandler() MsgHandler {
 	return d
 }
 
-func (d *DbManager) Init() {
+func (d *DbManager) Init() error {
 	db.MapDbInst = d.initNoSqlDb()
 	db.DbInst = d.initSqlDb()
 	_, err := db.DbInst.Execute(tableCreateSql)
-	log.Info(err)
+	return err
 }
 
 /**

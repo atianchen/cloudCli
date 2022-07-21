@@ -91,3 +91,7 @@ func GetStringContent(reader io.Reader) (string, error) {
 	}
 	return sb.String(), nil
 }
+
+func WriteStringToFile(filepath string, content string) error {
+	return ioutil.WriteFile(filepath, []byte(content), 0666)
+}

@@ -46,16 +46,18 @@ func (d *SysTaskNode) GetMsgHandler() node.MsgHandler {
 	return d
 }
 
-func (t *SysTaskNode) Init() {
+func (t *SysTaskNode) Init() error {
 	serviceConfig, err := cfg.GetConfig("cli.cloud")
 	if err != nil {
 		log.Error("Skip Service Registe")
+		return err
 	}
 	utils.MapToStruct(serviceConfig.(map[string]interface{}), &t.serviceInfo, "")
 	if len(t.serviceInfo.Name) < 1 {
 		t.serviceInfo.Name = t.serviceInfo.Ip
 	}
 	t.serviceInfo.Data = make(map[string]string)
+	return nil
 }
 
 func (t *SysTaskNode) Start(context *node.NodeContext) {

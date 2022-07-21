@@ -6,7 +6,6 @@ import (
 	"cloudCli/gin/dto"
 	"cloudCli/utils/timeUtils"
 	"github.com/google/uuid"
-	"time"
 )
 
 /**
@@ -18,8 +17,7 @@ type DocHisRepository struct {
 }
 
 func (r *DocHisRepository) Save(dh *domain.DocHistory) error {
-	time := timeUtils.TimeConfig{time.Now()}
-	dh.Ts = time.Unix()
+	dh.Ts = timeUtils.NowUnixTime()
 
 	/*	Id         string
 		Name       string

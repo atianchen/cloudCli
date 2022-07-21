@@ -3,6 +3,7 @@ package profile
 import (
 	"cloudCli/cfg"
 	channel2 "cloudCli/channel"
+	"cloudCli/component/nofity"
 	"cloudCli/domain"
 	"cloudCli/io"
 	"cloudCli/node"
@@ -14,7 +15,6 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
-	"time"
 )
 
 const PROFILE_NODE_NAME = "profileInspect"
@@ -26,12 +26,13 @@ const PROFILE_NODE_NAME = "profileInspect"
  */
 type ProfileInspect struct {
 	node.AbstractNode
-	configs          []ProfileConfig
-	docRepository    *repository.DocRepository
-	docHisRepository *repository.DocHisRepository
+	configs                 []ProfileConfig
+	docRepository           *repository.DocRepository
+	docHisRepository        *repository.DocHisRepository
+	notifyHistoryRepository *repository.NotifyHistoryRepository
 }
 
-func (p *ProfileInspect) Init() {
+func (p *ProfileInspect) Init() error {
 	/**
 	读取配置文件
 	*/
@@ -49,15 +50,21 @@ func (p *ProfileInspect) Init() {
 						str := jsonError.Error()
 						log.Error(str)
 					}
+					return nil
 				} else {
 					log.Error("Read Profile Config Error " + err.Error())
+					return err
 				}
+			} else {
+				return err
 			}
 		} else {
 			log.Error("Not Found Profile Config" + err.Error())
+			return err
 		}
 	} else {
 		log.Error("Not Found Profile Config" + err.Error())
+		return err
 	}
 }
 
@@ -70,13 +77,14 @@ func (p *ProfileInspect) Start(context *node.NodeContext) {
 	*/
 	p.docRepository = &repository.DocRepository{}
 	p.docHisRepository = &repository.DocHisRepository{}
-	p.FirstFileScan()
+	p.notifyHistoryRepository = &repository.NotifyHistoryRepository{}
+	p.InitScan()
 }
 
 /**
 第一次文件扫描
 */
-func (p *ProfileInspect) FirstFileScan() {
+func (p *ProfileInspect) InitScan() {
 	for _, config := range p.configs {
 		files, err := io.FindFile(config.Directory, config.Expression)
 		if err != nil {
@@ -185,10 +193,22 @@ func (p *ProfileInspect) reset() {
 		p.Transpot <- channel2.BuildErrorResponse(err)
 	} else {
 		//执行成功，发送回表示执行成功的AsyncResponse
-		p.FirstFileScan()
-		p.Transpot <- channel2.BuildEmptyResponse()
+		if err := p.Init(); err != nil {
+			p.Transpot <- channel2.BuildErrorResponse(err)
+		} else {
+			p.InitScan()
+			p.Transpot <- channel2.BuildEmptyResponse()
+		}
+
 	}
 
+}
+
+func (p *ProfileInspect) OnSendSuccess(mailItem *nofity.MailItem) {
+	/**
+	记录历史
+	*/
+	p.notifyHistoryRepository.Save(&domain.NotifyHistory{Content: mailItem.Content, Receiver: mailItem.To})
 }
 
 /**
@@ -200,8 +220,8 @@ func (p *ProfileInspect) checkFile(info *domain.DocInfo) {
 			log.Error("Check File Exception:" + info.Name)
 		}
 	}()
-	time := timeUtils.TimeConfig{time.Now()}
-	info.CheckTime = time.Unix()
+
+	info.CheckTime = timeUtils.NowUnixTime()
 	p.docRepository.UpdateCheckTime(info)
 	doc, err := ExtractDocInfo(info)
 	if err == nil {
@@ -223,13 +243,13 @@ func (p *ProfileInspect) checkFile(info *domain.DocInfo) {
 					/**
 					变更修改时间和HASH值
 					*/
-					lastHis.ModifyTime = time.Unix()
+					lastHis.ModifyTime = timeUtils.NowUnixTime()
 					lastHis.Hash = doc.Hash
 					p.docHisRepository.Update(lastHis)
 				} else {
 					lastHis = p.saveChangeHis(info, doc)
 				}
-				if err := SendMailAlarm(lastHis); err != nil {
+				if err := SendMailAlarm(lastHis, p); err != nil {
 					log.Info("Mail Send Error ", err.Error())
 				} //发送警告邮件
 			} else {
@@ -247,14 +267,12 @@ func (p *ProfileInspect) checkFile(info *domain.DocInfo) {
 */
 func (p *ProfileInspect) saveChangeHis(od *domain.DocInfo, nd *domain.DocInfo) *domain.DocHistory {
 
-	time := timeUtils.TimeConfig{time.Now()}
-
 	docHis := domain.DocHistory{
 		DocId:      od.Id,
 		Path:       od.Path,
 		NestedPath: od.NestedPath,
 		Name:       od.Name,
-		ModifyTime: time.Unix(),
+		ModifyTime: timeUtils.NowUnixTime(),
 		Hash:       nd.Hash,
 		Raw:        od.Content,
 		Content:    nd.Content,
@@ -277,10 +295,10 @@ func (p *ProfileInspect) saveChangeHis(od *domain.DocInfo, nd *domain.DocInfo) *
 func (p *ProfileInspect) UpdateHistoryStatus(id string, handler string, opinion string) error {
 	docHis, err := p.docHisRepository.GetByPrimary(id)
 	if err == nil {
-		time := timeUtils.TimeConfig{time.Now()}
+
 		docHis.Handler = handler
 		docHis.Opinion = opinion
-		docHis.HandleTime = time.Unix()
+		docHis.HandleTime = timeUtils.NowUnixTime()
 		return p.docHisRepository.Update(docHis)
 	} else {
 		return errors.New("Spec DocHistory Not Found")

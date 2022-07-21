@@ -1,11 +1,11 @@
 
 
 [{
-  "dir": "D:\\tmp",
-  "expression": "applicationContext.xml"
+"dir":"D:\\tmp",
+"expression":"applicationContext.xml"
 },{
-  "dir":"D:\\tmp",
-  "expression": "gateway-1.0.jar",
-  "nestedPath": "BOOT-INF/classes/bootstrap.yml"
+"dir":"D:\\tmp",
+"expression":"gateway-1.0.jar",
+"nestedPath":"BOOT-INF/classes/bootstrap.yml"
 }]
 

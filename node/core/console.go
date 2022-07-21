@@ -23,10 +23,15 @@ type Console struct {
 	node.AbstractNode
 }
 
-func (c *Console) Init() {
+func (c *Console) Init() error {
 	/**
 	 * 需要根据配置决定需要执行那些系统任务
 	 */
+	defer func() {
+		if r := recover(); r != nil {
+			log.Error("Console Init Error", r)
+		}
+	}()
 	taskConfig, _ := cfg.GetConfig("cli.node")
 	if taskConfig != nil {
 		taskAry := strings.Split(taskConfig.(string), ",")
@@ -42,6 +47,7 @@ func (c *Console) Init() {
 	for _, task := range sysTasks {
 		task.Init()
 	}
+	return nil
 }
 func (c *Console) GetMsgHandler() node.MsgHandler {
 	return nil

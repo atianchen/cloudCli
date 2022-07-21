@@ -46,6 +46,8 @@ func (s SysAction) AddRouter(g *gin.RouterGroup) {
 	configGroup := g.Group("/sys/config")
 	{
 		configGroup.POST("/list", security.JwtAuthInterceptor(), s.configAction.GetConfig)
+		configGroup.POST("/profile", security.JwtAuthInterceptor(), s.configAction.GetProfileConfig)
+		configGroup.POST("/profile/saveConfig", security.JwtAuthInterceptor(), s.configAction.SaveProfileConfig)
 	}
 
 }

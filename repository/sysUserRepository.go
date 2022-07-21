@@ -6,7 +6,6 @@ import (
 	"cloudCli/utils/timeUtils"
 	"github.com/google/uuid"
 	"log"
-	"time"
 )
 
 /**
@@ -25,8 +24,7 @@ func (r *SysUserRepository) Save(u *domain.SysUser) error {
 		Name   string
 		Pwd    string
 		Status int*/
-	time := timeUtils.TimeConfig{time.Now()}
-	u.Ts = time.Unix()
+	u.Ts = timeUtils.NowUnixTime()
 	_, err := db.DbInst.Execute("insert into sys_user (id,code,role_id,name,pwd,status,ts) values (?,?,?,?,?,?,?)",
 		uuid.New(), u.Code, u.RoleId, u.Name, u.Pwd, u.Status, u.Ts)
 	log.Println(err)

@@ -74,7 +74,10 @@ func (lc *DocController) DeleteDoc(c *gin.Context) {
 	docId := c.Query("docId")
 	if len(docId) > 0 {
 		if err := lc.repository.RemoveByPrimary(docId); err != nil {
-			c.JSON(http.StatusOK, dto.BuildEmptySuccessMsg())
+			/**
+			删除成功，则重置扫描
+			*/
+			lc.Reset(c)
 		} else {
 			c.JSON(http.StatusOK, dto.BuildErrorMsg(err.Error()))
 		}

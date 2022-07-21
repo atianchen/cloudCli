@@ -15,5 +15,6 @@
 # vendor/
 logs/
 db/
+gin/ui/
 data/
 *.db

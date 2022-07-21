@@ -30,8 +30,8 @@ func Init() *gin.Engine {
 	getwd, _ := os.Getwd()
 	//r.LoadHTMLGlob(getwd + "/gin/views/*.html")
 	r.Use(Cors(), log.GinLogger(), log.GinRecovery(true))
-	staticPack := packr.New("cloudCli", getwd+"/gin/static")
-	r.StaticFS("/static", staticPack) // http.Dir(getwd+"/gin/views/static"))
+	staticPack := packr.New("cloudCli", getwd+"/gin/ui")
+	r.StaticFS("/cloud/ui", staticPack) // http.Dir(getwd+"/gin/views/ui"))
 	group := r.Group("/cloud")
 
 	for _, opt := range options {

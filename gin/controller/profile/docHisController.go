@@ -9,7 +9,6 @@ import (
 	go_beanutils "github.com/atianchen/go-beanutils"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"time"
 )
 
 /**
@@ -73,9 +72,8 @@ func (lc *DocHisController) DocHisDetail(c *gin.Context) {
 func (lc *DocHisController) HandleDocHis(c *gin.Context) {
 	var param dto.DocHandleDto
 	c.BindJSON(&param)
-	time := timeUtils.TimeConfig{time.Now()}
 	his, _ := lc.repository.GetByPrimary(param.Id)
-	param.HandleTime = time.Unix()
+	param.HandleTime = timeUtils.NowUnixTime()
 	err := lc.repository.UpdateHandleResult(&param)
 	switch param.HandleResult {
 	case domain.DOCHIS_RESULT_RESERVE:

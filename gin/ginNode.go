@@ -4,6 +4,7 @@ import (
 	"cloudCli/cfg"
 	"cloudCli/ctx"
 	"cloudCli/gin/controller"
+	"cloudCli/gin/controller/notify"
 	"cloudCli/gin/controller/profile"
 	"cloudCli/gin/controller/sys"
 	"cloudCli/gin/routers"
@@ -19,9 +20,10 @@ type Gin struct {
 }
 
 var cliCtx ctx.Context = node.CreateNodeContext(nil)
-var actions = []controller.WebAction{sys.SysAction{}, profile.ProfileAction{}}
+var actions = []controller.WebAction{sys.SysAction{}, profile.ProfileAction{}, notify.NofityAction{}}
 
-func (*Gin) Init() {
+func (*Gin) Init() error {
+	return nil
 }
 
 func (*Gin) Start(context *node.NodeContext) {

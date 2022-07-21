@@ -7,7 +7,6 @@ import (
 	"cloudCli/utils/timeUtils"
 	"errors"
 	"strings"
-	"time"
 )
 
 var extractImpl = map[int]FileExtract{domain.DOC_TYPE_DISKFILE: &DiskFileExtract{}, domain.DOC_TYPE_JARFILE: &JarFileExtract{}}
@@ -47,14 +46,14 @@ type DiskFileExtract struct {
 解析磁盘文件
 */
 func (e *DiskFileExtract) Extract(filePath string, nestedPath string) (*domain.DocInfo, error) {
-	time := timeUtils.TimeConfig{Time: time.Now()}
+
 	content, cErr := utils.GetFileStringContent(filePath)
 	if cErr != nil {
 		return nil, cErr
 	}
 	hashVal, hashErr := utils.GetFileHash(filePath)
 	if hashErr == nil {
-		newDoc := domain.DocInfo{Name: utils.GetFileName(filePath), NestedPath: nestedPath, Content: content, Path: filePath, CreateTime: time.Unix(), Hash: hashVal, Type: domain.DOC_TYPE_DISKFILE}
+		newDoc := domain.DocInfo{Name: utils.GetFileName(filePath), NestedPath: nestedPath, Content: content, Path: filePath, CreateTime: timeUtils.NowUnixTime(), Hash: hashVal, Type: domain.DOC_TYPE_DISKFILE}
 		return &newDoc, nil
 	} else {
 		return nil, hashErr
@@ -68,7 +67,6 @@ type JarFileExtract struct {
 }
 
 func (e *JarFileExtract) Extract(filePath string, nestedPath string) (*domain.DocInfo, error) {
-	time := timeUtils.TimeConfig{Time: time.Now()}
 	rc, err := zip.OpenReader(filePath)
 	if err == nil {
 		defer rc.Close()
@@ -82,7 +80,7 @@ func (e *JarFileExtract) Extract(filePath string, nestedPath string) (*domain.Do
 		hashVal, hashErr := utils.ConvertReaderToHash(cfgFile)
 
 		if hashErr == nil {
-			newDoc := domain.DocInfo{Name: utils.GetFileName(filePath), NestedPath: nestedPath, Content: content, Path: filePath, CreateTime: time.Unix(), Hash: hashVal, Type: domain.DOC_TYPE_JARFILE}
+			newDoc := domain.DocInfo{Name: utils.GetFileName(filePath), NestedPath: nestedPath, Content: content, Path: filePath, CreateTime: timeUtils.NowUnixTime(), Hash: hashVal, Type: domain.DOC_TYPE_JARFILE}
 			return &newDoc, nil
 		} else {
 			return nil, hashErr

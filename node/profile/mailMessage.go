@@ -9,12 +9,16 @@ import (
 	"strconv"
 )
 
+type MailSendCallback interface {
+	OnSendSuccess(item *nofity.MailItem)
+}
+
 /**
  * 预警信息发送
  * @author jensen.chen
  * @date 2022/7/12
  */
-func SendMailAlarm(dh *domain.DocHistory) error {
+func SendMailAlarm(dh *domain.DocHistory, callback MailSendCallback) error {
 	repo := repository.ParamRepository{}
 	var params []domain.Param
 	/**
@@ -75,5 +79,10 @@ func SendMailAlarm(dh *domain.DocHistory) error {
 		return err
 	}
 	mailItem.To = recvParam.Val
-	return nofity.SendMail(&mailServer, &mailItem)
+
+	error := nofity.SendMail(&mailServer, &mailItem)
+	if error == nil {
+		callback.OnSendSuccess(&mailItem)
+	}
+	return error
 }

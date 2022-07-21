@@ -22,7 +22,7 @@ type MsgHandler interface {
  * 任务
  */
 type Node interface {
-	Init()
+	Init() error
 
 	/**
 	 * 开始
