@@ -50,6 +50,7 @@ func (lc *LoginController) CurrentUser(c *gin.Context) {
 func (lc *LoginController) Login(c *gin.Context) {
 	var param sys.LoginDto
 	c.BindJSON(&param)
+
 	user, err := lc.repository.FindByCode(param.Name)
 	if err != nil {
 		c.JSON(http.StatusOK, dto.BuildErrorMsg(err.Error()))
@@ -64,7 +65,17 @@ func (lc *LoginController) Login(c *gin.Context) {
 				},
 			}
 			token, _ := encrypt.GenerateToken(claims)
-			c.SetCookie("cloudst", token, 3600, "/", "/cloudCli", true, true)
+			http.SetCookie(c.Writer, &http.Cookie{
+				Name:     "cloudst",
+				Value:    token,
+				MaxAge:   3600,
+				Path:     "/",
+				SameSite: http.SameSiteLaxMode,
+				Secure:   false,
+				HttpOnly: true,
+			})
+
+			//c.SetCookie("cloudst", token, 3600, "/", "/cloudCli", true, true)
 			var userDto sys.UserDto
 			go_beanutils.CopyProperties(&userDto, user)
 			userDto.Token = token

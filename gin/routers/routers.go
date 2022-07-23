@@ -5,7 +5,6 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gobuffalo/packr/v2"
-	"os"
 	"time"
 )
 
@@ -26,11 +25,11 @@ func Init() *gin.Engine {
 	if mode == gin.ReleaseMode {
 		gin.SetMode(gin.ReleaseMode) // gin设置成发布模式
 	}
+
 	r := gin.Default()
-	getwd, _ := os.Getwd()
 	//r.LoadHTMLGlob(getwd + "/gin/views/*.html")
 	r.Use(Cors(), log.GinLogger(), log.GinRecovery(true))
-	staticPack := packr.New("cloudCli", getwd+"/gin/ui")
+	staticPack := packr.New("cloudCli", "../ui")
 	r.StaticFS("/cloud/ui", staticPack) // http.Dir(getwd+"/gin/views/ui"))
 	group := r.Group("/cloud")
 

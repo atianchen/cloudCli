@@ -40,8 +40,8 @@ func (r *DocHisRepository) Save(dh *domain.DocHistory) error {
  * 更新处理意见
  */
 func (r *DocHisRepository) UpdateHandleResult(dh *dto.DocHandleDto) error {
-	_, err := db.DbInst.Execute("update inspect_doc_his set handle_time=?,handler=?,opinion=?,handle_result=? where id=?",
-		dh.HandleTime, dh.Handler, dh.Opinion, dh.HandleResult, dh.Id)
+	_, err := db.DbInst.Execute("update inspect_doc_his set handle_time=?,handler=?,opinion=?,handle_result=?,status=? where id=?",
+		dh.HandleTime, dh.Handler, dh.Opinion, dh.HandleResult, dh.Status, dh.Id)
 	return err
 }
 
@@ -81,16 +81,16 @@ func (r *DocHisRepository) GetByPrimary(priKey string) (*domain.DocHistory, erro
 /**
  * 分页查询
  */
-func (r *DocHisRepository) PageQuery(dest *[]domain.DocHistory, startIndex int, limit int, status int, name string) error {
-	sql := "select * from inspect_doc_his where status=? "
+func (r *DocHisRepository) PageQuery(dest *[]domain.DocHistory, startIndex int, limit int, name string) error {
+	sql := "select * from inspect_doc_his "
 	if len(name) > 0 {
-		sql += " and name like ?"
+		sql += " where  name like ?"
 	}
 	sql += " limit ? offset  ?"
 	if len(name) > 0 {
-		return db.DbInst.Query(dest, sql, status, "%"+name+"%", limit, startIndex)
+		return db.DbInst.Query(dest, sql, "%"+name+"%", limit, startIndex)
 	} else {
-		return db.DbInst.Query(dest, sql, status, limit, startIndex)
+		return db.DbInst.Query(dest, sql, limit, startIndex)
 	}
 }
 

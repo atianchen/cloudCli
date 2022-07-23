@@ -6,6 +6,7 @@ import (
 	"cloudCli/gin/dto/profile"
 	"cloudCli/repository"
 	"cloudCli/utils/timeUtils"
+	"fmt"
 	go_beanutils "github.com/atianchen/go-beanutils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -33,7 +34,8 @@ func (lc *DocHisController) ListDocHis(c *gin.Context) {
 	var param dto.DocHisPageRequestDto
 	c.BindJSON(&param)
 	var docs []domain.DocHistory
-	err := lc.repository.PageQuery(&docs, param.Page*param.Limit, param.Limit, param.Status, param.Keyword)
+	fmt.Println(len(docs))
+	err := lc.repository.PageQuery(&docs, param.Page*param.Limit, param.Limit, param.Keyword)
 	if err != nil {
 		c.JSON(http.StatusOK, dto.BuildErrorMsg(err.Error()))
 	} else {
@@ -74,6 +76,7 @@ func (lc *DocHisController) HandleDocHis(c *gin.Context) {
 	c.BindJSON(&param)
 	his, _ := lc.repository.GetByPrimary(param.Id)
 	param.HandleTime = timeUtils.NowUnixTime()
+	param.Status = domain.DOCHIS_STATUS_END
 	err := lc.repository.UpdateHandleResult(&param)
 	switch param.HandleResult {
 	case domain.DOCHIS_RESULT_RESERVE:

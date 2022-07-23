@@ -11,4 +11,5 @@ type DocHandleDto struct {
 	HandleTime   int64 `db:"handle_time"` //处理时间
 	Handler      string
 	Opinion      string
+	Status       int
 }
