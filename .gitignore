@@ -18,3 +18,5 @@ db/
 gin/ui/
 data/
 *.db
+gin/routers/routers-packr.go
+packrd/packed-packr.go
