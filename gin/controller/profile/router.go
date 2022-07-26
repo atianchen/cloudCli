@@ -15,14 +15,14 @@ type ProfileAction struct {
 	docHisAction DocHisController
 }
 
-func (s ProfileAction) InitAction() {
+func (s *ProfileAction) InitAction() {
 	s.docAction = DocController{}
 	s.docAction.Init()
 	s.docHisAction = DocHisController{}
 	s.docHisAction.Init()
 }
 
-func (s ProfileAction) AddRouter(g *gin.RouterGroup) {
+func (s *ProfileAction) AddRouter(g *gin.RouterGroup) {
 
 	profileGroup := g.Group("/profile")
 	{

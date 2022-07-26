@@ -63,3 +63,12 @@ func fieldConfigName(field reflect.StructField, tagName string) string {
 		}
 	}
 }
+
+func MapValue[K interface{}](depot map[string]K, key string, defaultVal K) K {
+	rs, exists := depot[key]
+	if exists {
+		return rs
+	} else {
+		return defaultVal
+	}
+}

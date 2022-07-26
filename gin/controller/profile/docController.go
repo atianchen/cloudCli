@@ -2,6 +2,7 @@ package profile
 
 import (
 	"cloudCli/channel"
+	"cloudCli/ctx"
 	"cloudCli/domain"
 	"cloudCli/gin/dto"
 	profile2 "cloudCli/gin/dto/profile"
@@ -87,7 +88,7 @@ func (lc *DocController) DeleteDoc(c *gin.Context) {
 }
 
 func (lc *DocController) Reset(c *gin.Context) {
-	nodeChan, _ := channel.GetChan(profile.PROFILE_NODE_NAME) //获取节点channel
+	nodeChan, _ := channel.GetChan(ctx.PROFILE_NODE_NAME) //获取节点channel
 	if nodeChan != nil {
 		nodeChan <- profile.BuildRestCommand() //发送消息
 		select {                               //等待节点回复

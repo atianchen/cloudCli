@@ -14,12 +14,12 @@ type NofityAction struct {
 	historyController NotifyHistoryController
 }
 
-func (s NofityAction) InitAction() {
+func (s *NofityAction) InitAction() {
 	s.historyController = NotifyHistoryController{}
 	s.historyController.Init()
 }
 
-func (s NofityAction) AddRouter(g *gin.RouterGroup) {
+func (s *NofityAction) AddRouter(g *gin.RouterGroup) {
 
 	notifyGroup := g.Group("/notify")
 	{

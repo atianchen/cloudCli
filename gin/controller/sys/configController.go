@@ -3,6 +3,7 @@ package sys
 import (
 	"cloudCli/cfg"
 	"cloudCli/channel"
+	"cloudCli/ctx"
 	"cloudCli/gin/dto"
 	"cloudCli/gin/dto/profile"
 	_profile2 "cloudCli/node/profile"
@@ -75,7 +76,7 @@ func (lc *ConfigController) SaveProfileConfig(c *gin.Context) {
 		filePath, err := utils.GetFilePath(configFile.(string))
 		if err == nil {
 			if err := utils.WriteStringToFile(filePath, strings.Replace(param.Content, " ", "", -1)); err == nil {
-				nodeChan, _ := channel.GetChan(_profile2.PROFILE_NODE_NAME) //获取节点channel
+				nodeChan, _ := channel.GetChan(ctx.PROFILE_NODE_NAME) //获取节点channel
 				if nodeChan != nil {
 					nodeChan <- _profile2.BuildRestCommand() //发送消息
 					select {                                 //等待节点回复

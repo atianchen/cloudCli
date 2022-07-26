@@ -7,6 +7,7 @@ import (
 	"cloudCli/domain"
 	"cloudCli/io"
 	"cloudCli/node"
+	"cloudCli/node/extend"
 	"cloudCli/repository"
 	"cloudCli/utils"
 	"cloudCli/utils/log"
@@ -16,8 +17,6 @@ import (
 	"io/ioutil"
 	"os"
 )
-
-const PROFILE_NODE_NAME = "profileInspect"
 
 /**
  * 配置文件巡检
@@ -139,14 +138,14 @@ func (p *ProfileInspect) Name() string {
 	return "profileInspect"
 }
 
-func (p *ProfileInspect) GetMsgHandler() node.MsgHandler {
+func (p *ProfileInspect) GetMsgHandler() extend.MsgHandler {
 	return p
 }
 
 /**
 处理Channel消息
 */
-func (p *ProfileInspect) HandleMessage(msg interface{}) {
+func (p *ProfileInspect) HandleMessage(msg interface{}, channel chan interface{}) {
 	if msg != nil {
 		switch msg.(type) { //判断消息类型
 		case *channel2.CommandMessage: //如果是CommandMessage
@@ -173,7 +172,7 @@ func (p *ProfileInspect) HandleMessage(msg interface{}) {
 						/**
 						重置
 						*/
-						p.reset()
+						p.reset(channel)
 					}
 				}
 
@@ -186,18 +185,18 @@ func (p *ProfileInspect) HandleMessage(msg interface{}) {
 /**
 重置所有配置
 */
-func (p *ProfileInspect) reset() {
+func (p *ProfileInspect) reset(channel chan interface{}) {
 	log.Info("Reset Profile Config")
 	err := p.docRepository.RemoveAll()
 	if err != nil { //有错误，回送载有错误信息的AsyncResponse
-		p.Transpot <- channel2.BuildErrorResponse(err)
+		channel <- channel2.BuildErrorResponse(err)
 	} else {
 		//执行成功，发送回表示执行成功的AsyncResponse
 		if err := p.Init(); err != nil {
-			p.Transpot <- channel2.BuildErrorResponse(err)
+			channel <- channel2.BuildErrorResponse(err)
 		} else {
 			p.InitScan()
-			p.Transpot <- channel2.BuildEmptyResponse()
+			channel <- channel2.BuildEmptyResponse()
 		}
 
 	}

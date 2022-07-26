@@ -1,9 +1,7 @@
 package node
 
 import (
-	channel2 "cloudCli/channel"
-	"reflect"
-	"time"
+	"cloudCli/node/extend"
 )
 
 /**
@@ -11,12 +9,6 @@ import (
  * @author jensen.chen
  * @date 2022-05-20
  */
-/**
-消息处理
-*/
-type MsgHandler interface {
-	HandleMessage(msg interface{})
-}
 
 /**
  * 任务
@@ -42,51 +34,7 @@ type Node interface {
 	/**
 	消息监听
 	*/
-	GetMsgHandler() MsgHandler
+	GetMsgHandler() extend.MsgHandler
 
 	MessageReceive(target Node, channel chan interface{})
-}
-
-type AbstractNode struct {
-	Transpot chan interface{}
-}
-
-func (t *AbstractNode) Name() string {
-	return reflect.TypeOf(t).Elem().Name()
-}
-
-/**
-消息接收
-*/
-func (t *AbstractNode) MessageReceive(target Node, channel chan interface{}) {
-	t.Transpot = channel
-L:
-	for {
-		select {
-		case msg := <-channel:
-			switch msg.(type) {
-			case *channel2.CommandMessage:
-				{
-					if msg.(*channel2.CommandMessage).Name == "close" {
-						break L
-					} else {
-						handler := target.GetMsgHandler()
-						if handler != nil {
-							handler.HandleMessage(msg)
-						}
-					}
-				}
-			default:
-				{
-					handler := target.GetMsgHandler()
-					if handler != nil {
-						handler.HandleMessage(msg)
-					}
-				}
-			}
-		default:
-
-		}
-		time.Sleep(5 * time.Second)
-	}
 }

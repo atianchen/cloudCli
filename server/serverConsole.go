@@ -1,7 +1,9 @@
 package server
 
 import (
+	"cloudCli/domain"
 	"cloudCli/node"
+	"cloudCli/node/extend"
 )
 
 /**
@@ -11,14 +13,21 @@ import (
  */
 type ServerConsole struct {
 	node.AbstractNode
-	cliClientService *CliClientService
+	deployNodeService *DeployNodeService
+	nodes             []domain.DeployNode
 }
 
 func (t *ServerConsole) Init() error {
-	return t.cliClientService.load()
+	t.deployNodeService = &DeployNodeService{}
+	t.nodes = []domain.DeployNode{}
+	return t.deployNodeService.LoadAll(&t.nodes)
 }
 
 func (t *ServerConsole) Start(context *node.NodeContext) {
+	/**
+	如果配置了Leader属性，则启用Server端功能
+	*/
+	//leader, err := cfg.GetConfig("cli.server.leader")
 
 }
 
@@ -36,10 +45,10 @@ func (t *ServerConsole) Name() string {
 	return "serverConsole"
 }
 
-func (t *ServerConsole) HandleMessage(msg interface{}) {
+func (t *ServerConsole) HandleMessage(msg interface{}, channel chan interface{}) {
 
 }
 
-func (t *ServerConsole) GetMsgHandler() node.MsgHandler {
+func (t *ServerConsole) GetMsgHandler() extend.MsgHandler {
 	return t
 }

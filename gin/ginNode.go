@@ -9,21 +9,33 @@ import (
 	"cloudCli/gin/controller/sys"
 	"cloudCli/gin/routers"
 	"cloudCli/node"
+	"cloudCli/node/extend"
+	"cloudCli/server"
 	"cloudCli/utils/log"
 	"context"
 	"net/http"
 	"strconv"
 )
 
+const GIN_NODE_NAME = "ginNode"
+
 type Gin struct {
 	node.AbstractNode
 }
 
 var cliCtx ctx.Context = node.CreateNodeContext(nil)
-var actions = []controller.WebAction{sys.SysAction{}, profile.ProfileAction{}, notify.NofityAction{}}
+var actions = []controller.WebAction{&sys.SysAction{}, &profile.ProfileAction{}, &notify.NofityAction{}, &server.ServerAction{}}
 
 func (*Gin) Init() error {
 	return nil
+}
+
+func (*Gin) AddAction(action interface{}) {
+	actions = append(actions, action.(controller.WebAction))
+}
+
+func (*Gin) Name() string {
+	return GIN_NODE_NAME
 }
 
 func (*Gin) Start(context *node.NodeContext) {
@@ -52,11 +64,11 @@ func (*Gin) Start(context *node.NodeContext) {
 
 }
 
-func (d *Gin) HandleMessage(msg interface{}) {
+func (d *Gin) HandleMessage(msg interface{}, channel chan interface{}) {
 
 }
 
-func (d *Gin) GetMsgHandler() node.MsgHandler {
+func (d *Gin) GetMsgHandler() extend.MsgHandler {
 	return d
 }
 

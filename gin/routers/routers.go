@@ -13,7 +13,7 @@ type Option func(*gin.RouterGroup)
 var options = []Option{}
 
 // 设置gin的格式，生产环境设置为gin.ReleaseMode
-const mode = ""
+const mode = "debug"
 
 // 注册app的路由配置
 func Include(opts ...Option) {

@@ -3,6 +3,7 @@ package node
 import (
 	"cloudCli/cfg"
 	"cloudCli/channel"
+	"cloudCli/node/extend"
 	"cloudCli/utils/log"
 	"github.com/robfig/cron/v3"
 	"reflect"
@@ -54,11 +55,11 @@ func onTimeExecute(node string) {
 	}
 }
 
-func (t *CronNode) HandleMessage(msg interface{}) {
+func (t *CronNode) HandleMessage(msg interface{}, channel chan interface{}) {
 
 }
 
-func (t *CronNode) GetMsgHandler() MsgHandler {
+func (t *CronNode) GetMsgHandler() extend.MsgHandler {
 	return t
 }
 

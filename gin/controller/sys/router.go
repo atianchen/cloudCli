@@ -11,14 +11,15 @@ import (
  * @date 2022/7/7
  */
 type SysAction struct {
-	loginAction     LoginController
-	logoutAction    LogoutController
-	paramAction     ParamController
-	configAction    ConfigController
-	adminController AdminController
+	loginAction      LoginController
+	logoutAction     LogoutController
+	paramAction      ParamController
+	configAction     ConfigController
+	adminController  AdminController
+	remoteController RemoteController
 }
 
-func (s SysAction) InitAction() {
+func (s *SysAction) InitAction() {
 	s.loginAction = LoginController{}
 	s.loginAction.Init()
 	s.paramAction = ParamController{}
@@ -27,8 +28,10 @@ func (s SysAction) InitAction() {
 	s.logoutAction.Init()
 	s.adminController = AdminController{}
 	s.adminController.Init()
+	s.remoteController = RemoteController{}
+	s.remoteController.Init()
 }
-func (s SysAction) AddRouter(g *gin.RouterGroup) {
+func (s *SysAction) AddRouter(g *gin.RouterGroup) {
 
 	sysGroup := g.Group("/sys")
 	{
@@ -48,6 +51,10 @@ func (s SysAction) AddRouter(g *gin.RouterGroup) {
 		configGroup.POST("/list", security.JwtAuthInterceptor(), s.configAction.GetConfig)
 		configGroup.POST("/profile", security.JwtAuthInterceptor(), s.configAction.GetProfileConfig)
 		configGroup.POST("/profile/saveConfig", security.JwtAuthInterceptor(), s.configAction.SaveProfileConfig)
+	}
+	remoteGroup := g.Group("/remote")
+	{
+		remoteGroup.POST("/accept", s.remoteController.Accpet)
 	}
 
 }

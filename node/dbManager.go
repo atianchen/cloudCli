@@ -3,6 +3,7 @@ package node
 import (
 	"cloudCli/cfg"
 	"cloudCli/db"
+	"cloudCli/node/extend"
 	"cloudCli/utils"
 	"cloudCli/utils/log"
 	"os"
@@ -76,6 +77,15 @@ const tableCreateSql string = `
 				"send_time" INTEGER NULL,
    				PRIMARY KEY('id')
 			);
+	CREATE TABLE IF NOT EXISTS  "deploy_node" (
+			    "id"  VARCHAR(100) NOT NULL,
+				"name" VARCHAR(255) NULL,
+				"ip" VARCHAR(100) NULL,
+				"port" INTEGER NULL,
+				"ts" INTEGER NULL,
+				"status" INTEGER NULL,
+   				PRIMARY KEY('id')
+			);
 	INSERT OR IGNORE INTO "sys_user" (id,code,name,pwd,status,role_id ,ts,creator) values (1,"admin","admin","21232f297a57a5a743894a0e4a801fc3",1,"1",0,"sys");
 
 	INSERT OR IGNORE INTO "sys_param" (id,param_group,code,name,val) values (1,"mail","host","SMTP Server Address","smtp.qq.com");
@@ -96,11 +106,11 @@ type DbManager struct {
 	AbstractNode
 }
 
-func (d *DbManager) HandleMessage(msg interface{}) {
+func (d *DbManager) HandleMessage(msg interface{}, channel chan interface{}) {
 
 }
 
-func (d *DbManager) GetMsgHandler() MsgHandler {
+func (d *DbManager) GetMsgHandler() extend.MsgHandler {
 	return d
 }
 

@@ -1,6 +1,8 @@
 cli:
   server:
     port: 9090
+    bind: 127.0.0.1
+    leader: true
   cloud:
     name: Test
     ip: 127.0.0.1
@@ -18,10 +20,10 @@ cli:
   timer:
     sysTask: '*/10 * * * *'
     profileInspect: '*/20 * * * *'
-  nacos:
-    addr: http://localhost:8848/nacos
-    nameSpace: test
-    logDir: /log/nacos
-    cacheDir: /nacos/cache
+#  nacos:
+#    addr: http://localhost:8848/nacos
+#    nameSpace: test
+#    logDir: /log/nacos
+#    cacheDir: /nacos/cache
   profile-inspect:
     config: profile.json
