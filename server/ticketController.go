@@ -4,6 +4,7 @@ import (
 	"cloudCli/db"
 	"cloudCli/gin/dto"
 	"cloudCli/utils/encrypt"
+	"cloudCli/utils/timeUtils"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
@@ -13,7 +14,7 @@ import (
 	"time"
 )
 
-const EXPIRES_TIME = 6 //TOKEN过期时间 单位:秒
+const EXPIRES_TIME = 10 //TOKEN过期时间 单位:秒
 
 /**
  *
@@ -32,23 +33,19 @@ func (tc *TicketController) Init() {
 验证票据
 */
 func (tc *TicketController) VerifyTicket(c *gin.Context) {
-	var param TicketVerifyDto
-	if err := c.BindJSON(&param); err != nil {
-		c.Status(http.StatusBadRequest)
-	} else {
-		var ncTicket NcTicketToken
-		if err := encrypt.ParseToken(param.Ticket, &ncTicket); err == nil {
-			cacheKey := param.Ip + "_" + strconv.Itoa(param.Port) + "_ticket"
-			_, err = db.MapDbInst.Get(cacheKey)
-			if err != nil {
-				c.Status(http.StatusBadRequest)
-			} else {
-				db.MapDbInst.Remove(cacheKey)
-				c.JSON(http.StatusOK, dto.BuildEmptySuccessMsg())
-			}
-		} else {
+	token := c.Query("token")
+	var ncTicket NcTicket
+	if err := encrypt.ParseToken(token, &ncTicket); err == nil {
+		cacheKey := ncTicket.Ip + "_" + strconv.Itoa(int(ncTicket.Port)) + "_ticket"
+		_, err = db.MapDbInst.Get(cacheKey)
+		if err != nil {
 			c.Status(http.StatusBadRequest)
+		} else {
+			db.MapDbInst.Remove(cacheKey)
+			c.JSON(http.StatusOK, dto.BuildEmptySuccessMsg())
 		}
+	} else {
+		c.Status(http.StatusBadRequest)
 	}
 
 }
@@ -57,29 +54,31 @@ func (tc *TicketController) VerifyTicket(c *gin.Context) {
 重定向到远程登录节点
 */
 func (tc *TicketController) RedirectNode(c *gin.Context) {
+	c.Header("Cache-Control", "no-cache, no-store, must-revalidate")
+	c.Header("Pragma", "no-cache")
+	c.Header("Expires", "0")
 	nodeId := c.Query("nodeId")
 	nodeImpl, err := tc.deployNodeService.GetByPrimary(nodeId)
 	if err != nil {
 		c.Status(http.StatusForbidden)
 	} else {
-		ticket := NcTicket{
-			nodeImpl.Ip,
-			nodeImpl.Port,
-			uuid.New().String(),
-		}
-		cacheKey := nodeImpl.Ip + "_" + strconv.Itoa(nodeImpl.Port) + "_ticket"
+		ticket := uuid.New().String()
+		cacheKey := nodeImpl.Ip + "_" + strconv.Itoa(int(nodeImpl.Port)) + "_ticket"
 		cacheVal, err := json.Marshal(ticket)
 		if err == nil {
 			db.MapDbInst.Set(cacheKey, string(cacheVal), EXPIRES_TIME*time.Second)
-			claims := NcTicketToken{
+			claims := NcTicket{
+				nodeImpl.Ip,
+				nodeImpl.Port,
 				ticket,
 				jwt.StandardClaims{
 					ExpiresAt: time.Now().Add(EXPIRES_TIME * time.Second).Unix(),
-					Issuer:    "admin",
 				},
 			}
 			token, _ := encrypt.GenerateToken(claims)
-			c.Redirect(http.StatusMovedPermanently, "http://"+nodeImpl.Ip+":"+strconv.Itoa(nodeImpl.Port)+"/cloud/remote/accept?token="+token)
+			var ncTicket2 NcTicket
+			encrypt.ParseToken(token, &ncTicket2)
+			c.Redirect(http.StatusMovedPermanently, "http://"+nodeImpl.Ip+":"+strconv.Itoa(int(nodeImpl.Port))+"/cloud/remote/accept?token="+token+"&ts="+strconv.Itoa(int(timeUtils.NowUnixTime())))
 		} else {
 			c.Status(http.StatusForbidden)
 		}

@@ -1,20 +1,25 @@
 package server
 
+import "github.com/golang-jwt/jwt"
+
 /**
  * DeployNodeDto
  * @author jensen.chen
  * @date 2022/7/26
  */
-type DeployNodeDto struct {
-	Id     string `json:"id"`
-	Name   string `json:"name"`
-	Ip     string `json:"ip"`
-	Port   int    `json:"port"`
-	Ts     int64  `json:"ts"`     //最后一次PING的时间
-	Status int    `json:"status"` //状态
+type NodePayload struct {
+	Content string
 }
-type TicketVerifyDto struct {
+
+type DeployNodeDto struct {
+	Name string `json:"name"`
+	Ip   string `json:"ip"`
+	Port uint   `json:"port"`
+}
+
+type NcTicket struct {
 	Ip     string `json:"ip"`
-	Port   int    `json:"port"`
-	Ticket string `json:"ticket"`
+	Port   uint   `json:"port"`
+	Ticket string `json:"ticket"` //票据号
+	jwt.StandardClaims
 }

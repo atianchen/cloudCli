@@ -5,9 +5,9 @@ import (
 	"cloudCli/cfg"
 	channel2 "cloudCli/channel"
 	"cloudCli/ctx"
-	"cloudCli/driver"
 	"cloudCli/node"
 	"cloudCli/node/extend"
+	"cloudCli/server"
 	"cloudCli/utils/log"
 	"encoding/json"
 	"errors"
@@ -22,7 +22,7 @@ import (
 */
 type SysTaskNode struct {
 	node.AbstractNode
-	serviceInfo driver.ServiceInstance
+	registeCenterUrl string //注册中心地址
 	/*	nacosClient *driver.NacosClient*/
 }
 
@@ -33,6 +33,9 @@ func (t *SysTaskNode) HandleMessage(msg interface{}, channel chan interface{}) {
 			switch msg.(*channel2.CommandMessage).Name {
 			case channel2.MESSAGE_ONTIME:
 				{
+					if err := t.nodePing(); err != nil {
+						log.Error(err.Error())
+					}
 					/**
 					  更新注册的时间戳
 					*/
@@ -57,9 +60,13 @@ func (t *SysTaskNode) Init() error {
 		log.Error("Skip Service Registe")
 		return err
 	}
-	t.serviceInfo.Ip = ctx.SERVER_BIND
-	t.serviceInfo.Port = uint64(ctx.SERVER_PORT)
-	t.serviceInfo.Name = ctx.APP_NAME
+
+	leaderAddr, err := cfg.GetConfig("cli.cloud.addr")
+	if err != nil {
+		log.Error("Leader Addr Miss")
+		return err
+	}
+	t.registeCenterUrl = leaderAddr.(string)
 
 	/*	utils.MapToStruct(serviceConfig.(map[string]interface{}), &t.serviceInfo, "")
 		if len(t.serviceInfo.Name) < 1 {
@@ -69,24 +76,9 @@ func (t *SysTaskNode) Init() error {
 	return nil
 }
 
-func (t *SysTaskNode) registeNode() error {
-	bytesContent, err := json.Marshal(t.serviceInfo)
-	if err != nil {
-		return err
-	}
-	resp, err := http.Post("http://127.0.0.1:9090/cloud/node/registe", "application/json", bytes.NewReader(bytesContent))
-	if err != nil {
-		return err
-	}
-	if resp.StatusCode != http.StatusOK {
-		return errors.New("Node Regsite Error ")
-	}
-	return nil
-}
-
 func (t *SysTaskNode) Start(context *node.NodeContext) {
 	if err := t.registeNode(); err != nil {
-		log.Error(err.Error())
+		log.Error(err)
 	} else {
 		log.Infof("Node Registe Success")
 	}
@@ -100,7 +92,52 @@ func (t *SysTaskNode) Start(context *node.NodeContext) {
 				log.Error("Register Service Error :" + err.Error())
 			}
 		}*/
+}
 
+func (t *SysTaskNode) buildPayload() ([]byte, error) {
+	bytes, err := json.Marshal(server.DeployNodeDto{ctx.APPINFO.APP_NAME,
+		ctx.APPINFO.SERVER_BIND,
+		ctx.APPINFO.SERVER_PORT})
+	if err != nil {
+		return nil, err
+	}
+	body, err := server.Encrypt(string(bytes))
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(server.NodePayload{
+		Content: body,
+	})
+}
+
+func (t *SysTaskNode) registeNode() error {
+	body, err := t.buildPayload()
+	if err != nil {
+		return err
+	}
+	resp, err := http.Post(t.registeCenterUrl+"/node/registe", "application/json", bytes.NewReader(body))
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return errors.New("Node Regsite Error")
+	}
+	return nil
+}
+
+func (t *SysTaskNode) nodePing() error {
+	body, err := t.buildPayload()
+	if err != nil {
+		return err
+	}
+	resp, err := http.Post(t.registeCenterUrl+"/node/ping", "application/json", bytes.NewReader(body))
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return errors.New("Node Regsite Error ")
+	}
+	return nil
 }
 
 func (t *SysTaskNode) Stop() {

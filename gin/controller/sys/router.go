@@ -54,7 +54,7 @@ func (s *SysAction) AddRouter(g *gin.RouterGroup) {
 	}
 	remoteGroup := g.Group("/remote")
 	{
-		remoteGroup.POST("/accept", s.remoteController.Accpet)
+		remoteGroup.GET("/accept", s.remoteController.Accpet)
 	}
 
 }

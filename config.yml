@@ -5,20 +5,20 @@ cli:
     leader: true
   cloud:
     name: Test
-    ip: 127.0.0.1
+    addr: http://127.0.0.1:9090/cloud
     group:  test
     cluster:  test
   log:
     console:
       logLevel: info
     file:
-      logPath: ./logs/cloudCli.log
+     logPath: ./logs/cloudCli.log
   db:
     badger:
       path: d:/work/db2
   node: CronNode,ProfileInspect
   timer:
-    sysTask: '*/10 * * * *'
+    sysTask: '*/2 * * * *'
     profileInspect: '*/20 * * * *'
 #  nacos:
 #    addr: http://localhost:8848/nacos

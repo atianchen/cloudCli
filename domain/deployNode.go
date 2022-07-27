@@ -9,7 +9,7 @@ type DeployNode struct {
 	Id     string
 	Name   string
 	Ip     string
-	Port   int
+	Port   uint
 	Ts     int64 //最后一次PING的时间
 	Status int   //状态
 }

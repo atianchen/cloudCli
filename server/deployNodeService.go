@@ -51,13 +51,13 @@ func (r *DeployNodeService) GetByPrimary(priKey string) (*domain.DeployNode, err
 	return &node, err
 }
 
-func (r *DeployNodeService) GetByIpAndPort(ip string, port int) (*domain.DeployNode, error) {
+func (r *DeployNodeService) GetByIpAndPort(ip string, port uint) (*domain.DeployNode, error) {
 	node := domain.DeployNode{}
 	err := db.DbInst.Get(&node, "select * from deploy_node where ip=? and port=?", ip, port)
 	return &node, err
 }
 
-func (r *DeployNodeService) CountByIpAndPort(ip string, port int) (int, error) {
+func (r *DeployNodeService) CountByIpAndPort(ip string, port uint) (int, error) {
 	var num int
 	err := db.DbInst.Get(&num, "select count(*) from deploy_node where ip=? and port=? ", ip, port)
 	return num, err

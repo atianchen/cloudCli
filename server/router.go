@@ -34,8 +34,10 @@ func (s *ServerAction) AddRouter(g *gin.RouterGroup) {
 		log.Debug("Enable Leader Server Action")
 		serverGroup := g.Group("/node")
 		{
-			serverGroup.POST("/registe", s.pingController.RegisteNode) //注册节点
-			serverGroup.POST("/ping", s.pingController.NodePing)       //节点Ping
+			serverGroup.POST("/registe", ServerAuthInterceptor(), s.pingController.RegisteNode) //注册节点
+			serverGroup.POST("/ping", ServerAuthInterceptor(), s.pingController.NodePing)       //节点Ping
+			serverGroup.POST("/verify", s.ticketController.VerifyTicket)
+			serverGroup.GET("/redirect", s.ticketController.RedirectNode)
 		}
 	}
 

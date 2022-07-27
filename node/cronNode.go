@@ -26,17 +26,12 @@ func (t *CronNode) Start(context *NodeContext) {
 	cronExpress, _ := cfg.GetConfig("cli.timer")
 	if cronExpress != nil {
 		for node, express := range cronExpress.(map[string]interface{}) {
-			entryId, err := t.cronInstance.AddFunc(express.(string), func() {
-				/**
-				定时任务通知
-				*/
-				onTimeExecute(node)
-			})
-			if err != nil {
-				log.Error("Timer Start Error:", err.Error(), node, express)
-			} else {
-				log.Info("Timer Init Success:", entryId, node, express)
-			}
+			go func(node string, express string) {
+				t.cronInstance.AddFunc(express, func() {
+					onTimeExecute(node)
+				})
+			}(node, express.(string))
+
 		}
 		t.cronInstance.Start()
 	}

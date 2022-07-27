@@ -41,36 +41,36 @@ func (c *Console) Init() error {
 			env.AddTask(task)
 		}
 	}
+	c.setAppInfo()
 	/**
 	 * 任务初始化
 	 */
 	for _, task := range env.GetTasks() {
 		task.Init()
 	}
-	c.setAppInfo()
+
 	return nil
 }
 
 /**
 设置ctx的AppInfo
 */
-func (c *Console) setAppInfo() extend.MsgHandler {
+func (c *Console) setAppInfo() {
 	serverInfo, err := cfg.GetConfig("cli.server")
 	if err != nil {
 		log.Error(err.Error())
 	} else {
 		data := serverInfo.(map[string]interface{})
-		ctx.SERVER_BIND = utils.MapValue(data, "bind", "").(string)
-		ctx.SERVER_PORT = utils.MapValue(data, "port", 0).(int)
+		bind := utils.MapValue(data, "bind", "").(string)
+		bindPort := uint(utils.MapValue(data, "port", 0).(int))
 		appName, err := cfg.GetConfig("cli.cloud.name")
-		if err == nil {
-			ctx.APP_NAME = appName.(string)
-		} else {
+		if err != nil {
 			log.Error(err.Error())
+			return
 		}
+		ctx.InitAppInfo(appName.(string), bind, bindPort)
 
 	}
-	return nil
 }
 
 func (c *Console) GetMsgHandler() extend.MsgHandler {
