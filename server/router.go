@@ -2,6 +2,7 @@ package server
 
 import (
 	"cloudCli/cfg"
+	"cloudCli/gin/security"
 	"cloudCli/utils/log"
 	"github.com/gin-gonic/gin"
 )
@@ -17,8 +18,9 @@ import (
  * @date 2022/7/8
  */
 type ServerAction struct {
-	pingController   PingController
-	ticketController TicketController
+	pingController       PingController
+	ticketController     TicketController
+	nodeManageController NodeManageController
 }
 
 func (s *ServerAction) InitAction() {
@@ -26,6 +28,8 @@ func (s *ServerAction) InitAction() {
 	s.pingController.Init()
 	s.ticketController = TicketController{}
 	s.ticketController.Init()
+	s.nodeManageController = NodeManageController{}
+	s.nodeManageController.Init()
 }
 
 func (s *ServerAction) AddRouter(g *gin.RouterGroup) {
@@ -36,8 +40,9 @@ func (s *ServerAction) AddRouter(g *gin.RouterGroup) {
 		{
 			serverGroup.POST("/registe", ServerAuthInterceptor(), s.pingController.RegisteNode) //注册节点
 			serverGroup.POST("/ping", ServerAuthInterceptor(), s.pingController.NodePing)       //节点Ping
-			serverGroup.POST("/verify", s.ticketController.VerifyTicket)
-			serverGroup.GET("/redirect", s.ticketController.RedirectNode)
+			serverGroup.POST("/verify", s.ticketController.VerifyTicket)                        //验证票据
+			serverGroup.GET("/redirect", s.ticketController.RedirectNode)                       //重定向
+			serverGroup.POST("/list", security.JwtAuthInterceptor(), s.nodeManageController.ListNode)
 		}
 	}
 

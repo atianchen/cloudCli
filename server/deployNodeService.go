@@ -36,12 +36,33 @@ func (c *DeployNodeService) UpdateTs(node *domain.DeployNode) error {
 	return err
 }
 
+/**
+ * 分页查询
+ */
+func (r *DeployNodeService) PageQuery(dest *[]domain.DeployNode, startIndex int, limit int, keyword string) error {
+	sql := "select * from deploy_node"
+	if len(keyword) > 0 {
+		sql += " where name like ? or ip like ?"
+	}
+	sql += " limit ? offset  ?"
+	if len(keyword) > 0 {
+		return db.DbInst.Query(dest, sql, "%"+keyword+"%", "%"+keyword+"%", limit, startIndex)
+	} else {
+		return db.DbInst.Query(dest, sql, limit, startIndex)
+	}
+}
+
 func (r *DeployNodeService) LoadAll(dest *[]domain.DeployNode) error {
 	return db.DbInst.Query(dest, "select  * from deploy_node")
 }
 
 func (c *DeployNodeService) Remove(node *domain.DeployNode) error {
 	_, err := db.DbInst.Execute("delete from deploy_node where ip=? and port=?", node.Ip, node.Port)
+	return err
+}
+
+func (c *DeployNodeService) RemoveExpireNode(ts int) error {
+	_, err := db.DbInst.Execute("delete from deploy_node where ts<>", ts)
 	return err
 }
 

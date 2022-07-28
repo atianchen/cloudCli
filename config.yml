@@ -18,8 +18,9 @@ cli:
       path: d:/work/db2
   node: CronNode,ProfileInspect
   timer:
-    sysTask: '*/2 * * * *'
+    sysTask: '*/5 * * * *'
     profileInspect: '*/20 * * * *'
+    serverConsole:  '*/10 * * * *'
 #  nacos:
 #    addr: http://localhost:8848/nacos
 #    nameSpace: test

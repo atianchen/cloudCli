@@ -39,6 +39,7 @@ func (s *SysAction) AddRouter(g *gin.RouterGroup) {
 		sysGroup.GET("/logout", s.logoutAction.Logout)
 		sysGroup.POST("/currentUser", s.loginAction.CurrentUser)
 		sysGroup.POST("/updateAdminPwd", security.JwtAuthInterceptor(), s.adminController.UpdateAdminPwd)
+		sysGroup.POST("/appInfo", security.JwtAuthInterceptor(), s.configAction.AppInfo)
 	}
 	paramGroup := g.Group("/sys/param")
 	{

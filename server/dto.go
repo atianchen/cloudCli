@@ -12,9 +12,12 @@ type NodePayload struct {
 }
 
 type DeployNodeDto struct {
-	Name string `json:"name"`
-	Ip   string `json:"ip"`
-	Port uint   `json:"port"`
+	Name   string `json:"name"`
+	Ip     string `json:"ip"`
+	Port   uint   `json:"port"`
+	Id     string `json:"id"`
+	Ts     int64  `json:"ts"`
+	Status int    `json:"status"` //状态
 }
 
 type NcTicket struct {

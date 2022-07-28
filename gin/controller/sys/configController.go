@@ -28,6 +28,18 @@ func (lc *ConfigController) Init() {
 
 }
 
+func (lc *ConfigController) AppInfo(c *gin.Context) {
+	var appInfo dto.AppInfoDto
+	appInfo.Ip = ctx.APPINFO.SERVER_BIND
+	appInfo.Name = ctx.APPINFO.APP_NAME
+	appInfo.Port = int(ctx.APPINFO.SERVER_PORT)
+	leader, err := cfg.GetConfig("cli.server.leader")
+	if err == nil {
+		appInfo.Leader = leader.(bool)
+	}
+	c.JSON(http.StatusOK, dto.BuildSuccessMsg(appInfo))
+}
+
 func (lc *ConfigController) GetConfig(c *gin.Context) {
 	val, err := cfg.GetConfig("cli")
 	if err == nil {

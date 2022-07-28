@@ -1,9 +1,12 @@
 package server
 
 import (
+	channel2 "cloudCli/channel"
 	"cloudCli/domain"
 	"cloudCli/node"
 	"cloudCli/node/extend"
+	"cloudCli/utils/log"
+	"time"
 )
 
 /**
@@ -11,6 +14,8 @@ import (
  * @author jensen.chen
  * @date 2022/7/25
  */
+const EXPIRE_PERIOD = 10 * time.Minute
+
 type ServerConsole struct {
 	node.AbstractNode
 	deployNodeService *DeployNodeService
@@ -46,6 +51,28 @@ func (t *ServerConsole) Name() string {
 }
 
 func (t *ServerConsole) HandleMessage(msg interface{}, channel chan interface{}) {
+	switch msg.(type) {
+	case *channel2.CommandMessage:
+		{
+			switch msg.(*channel2.CommandMessage).Name {
+			case channel2.MESSAGE_ONTIME:
+				{
+					t.clearExpireNode()
+				}
+			}
+		}
+	}
+}
+
+/**
+清除过期的注册信息
+*/
+func (t *ServerConsole) clearExpireNode() {
+	if err := t.deployNodeService.RemoveExpireNode(int(time.Now().Add(-1 * EXPIRE_PERIOD).Unix())); err != nil {
+		log.Error("Clear Expired Node Error ", err.Error())
+	} else {
+		log.Error("Clear Expired Node ")
+	}
 
 }
 

@@ -95,9 +95,9 @@ func (t *SysTaskNode) Start(context *node.NodeContext) {
 }
 
 func (t *SysTaskNode) buildPayload() ([]byte, error) {
-	bytes, err := json.Marshal(server.DeployNodeDto{ctx.APPINFO.APP_NAME,
-		ctx.APPINFO.SERVER_BIND,
-		ctx.APPINFO.SERVER_PORT})
+	bytes, err := json.Marshal(server.DeployNodeDto{Name: ctx.APPINFO.APP_NAME,
+		Ip:   ctx.APPINFO.SERVER_BIND,
+		Port: ctx.APPINFO.SERVER_PORT})
 	if err != nil {
 		return nil, err
 	}
